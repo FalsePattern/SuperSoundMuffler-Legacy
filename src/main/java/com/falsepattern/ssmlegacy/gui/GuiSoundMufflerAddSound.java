@@ -3,6 +3,7 @@ package com.falsepattern.ssmlegacy.gui;
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.gui.data.IMufflerAccessor;
+import com.falsepattern.ssmlegacy.mixin.interfaces.IGuiScrollingListMixin;
 import lombok.val;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
@@ -251,7 +252,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
         }
     }
 
-    private final class GuiSoundList extends GuiScrollingListExt {
+    private final class GuiSoundList extends GuiScrollingList {
         private List<ResourceLocation> sounds;
         private final int slotHeight;
         private List<Integer> selectedIndicies = new ArrayList<>();
@@ -276,7 +277,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
                 }
             } else if(isShiftKeyDown()) {
                 clearSelection();
-                val selectedIndex = getSelectedIndex();
+                val selectedIndex = ((IGuiScrollingListMixin)(Object)this).getSelectedIndex();
                 int start = index > selectedIndex ? selectedIndex : index;
                 int end = index > selectedIndex ? index : selectedIndex;
                 selectRange(start, end);
@@ -308,7 +309,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
         void selectIndex(int index) {
             removeSelection(index);
             selectedIndicies.add(index);
-            setSelectedIndex(index);
+            ((IGuiScrollingListMixin)(Object)this).setSelectedIndex(index);
         }
 
         void clearSelection() {
@@ -319,7 +320,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
             for(int i = start; i <= end; i++) {
                 selectedIndicies.add(i);
             }
-            setSelectedIndex(end);
+            ((IGuiScrollingListMixin)(Object)this).setSelectedIndex(end);
         }
 
         @Override
@@ -338,7 +339,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
 
         void setSounds(List<ResourceLocation> sounds) {
             this.sounds = sounds;
-            setSelectedIndex(-1);
+            ((IGuiScrollingListMixin)(Object)this).setSelectedIndex(-1);
             selectedIndicies.clear();
         }
 

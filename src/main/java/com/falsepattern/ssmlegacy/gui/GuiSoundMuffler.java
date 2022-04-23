@@ -4,7 +4,7 @@ import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import com.falsepattern.ssmlegacy.gui.data.IMufflerAccessor;
-import cpw.mods.fml.relauncher.ReflectionHelper;
+import com.falsepattern.ssmlegacy.mixin.interfaces.IGuiScrollingListMixin;
 import lombok.SneakyThrows;
 import lombok.val;
 import net.minecraft.client.Minecraft;
@@ -138,7 +138,7 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
         muffler.setRange(slider.getValueInt());
     }
 
-    private final class GuiSoundList extends GuiScrollingListExt {
+    private final class GuiSoundList extends GuiScrollingList {
         private List<ResourceLocation> sounds;
         private final int slotHeight;
         private List<Integer> selectedIndicies = new ArrayList<>();
@@ -163,9 +163,9 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
                 }
             } else if(isShiftKeyDown()) {
                 clearSelection();
-                val selectedIndex = getSelectedIndex();
-                int start = index > selectedIndex ? selectedIndex : index;
-                int end = index > selectedIndex ? index : selectedIndex;
+                val selectedIndex = ((IGuiScrollingListMixin)(Object)this).getSelectedIndex();
+                int start = Math.min(index, selectedIndex);
+                int end = Math.max(index, selectedIndex);
                 selectRange(start, end);
             } else {
                 clearSelection();
@@ -195,7 +195,7 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
         void selectIndex(int index) {
             removeSelection(index);
             selectedIndicies.add(index);
-            setSelectedIndex(index);
+            ((IGuiScrollingListMixin)(Object)this).setSelectedIndex(index);
         }
 
         void clearSelection() {
@@ -206,7 +206,7 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
             for(int i = start; i <= end; i++) {
                 selectedIndicies.add(i);
             }
-            setSelectedIndex(end);
+            ((IGuiScrollingListMixin)(Object)this).setSelectedIndex(end);
         }
 
         @Override
