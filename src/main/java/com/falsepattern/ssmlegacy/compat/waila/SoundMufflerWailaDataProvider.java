@@ -1,6 +1,7 @@
 package com.falsepattern.ssmlegacy.compat.waila;
 
 import com.falsepattern.ssmlegacy.Tags;
+import com.falsepattern.ssmlegacy.block.BlockSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -60,10 +61,10 @@ public class SoundMufflerWailaDataProvider implements IWailaDataProvider {
     }
 
     public static void register() {
-        FMLInterModComms.sendMessage("waila", "register", Tags.GROUPNAME + ".compat.waila.SoundMufflerWailaDataProvider.callbackRegister");
+        FMLInterModComms.sendMessage("Waila", "register", Tags.GROUPNAME + ".compat.waila.SoundMufflerWailaDataProvider.callbackRegister");
     }
 
     public static void callbackRegister(IWailaRegistrar registrar) {
-        registrar.registerBodyProvider(new SoundMufflerWailaDataProvider(), TileEntitySoundMuffler.class);
+        registrar.registerBodyProvider(new SoundMufflerWailaDataProvider(), BlockSoundMuffler.class);
     }
 }

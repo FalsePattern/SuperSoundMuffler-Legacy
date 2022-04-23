@@ -10,6 +10,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -84,6 +85,16 @@ public class TileEntitySoundMuffler extends TileEntity {
     }
 
     @Override
+    public boolean shouldRenderInPass(int pass) {
+        return pass == 0;
+    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return AxisAlignedBB.getBoundingBox(xCoord + 0.1f, yCoord + 0.1f, zCoord + 0.1f, xCoord + 0.9f, yCoord + 1.5f, zCoord + 0.9f);
+    }
+
+    @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
         readFromNBT(pkt.func_148857_g());
     }
@@ -143,6 +154,7 @@ public class TileEntitySoundMuffler extends TileEntity {
         rangeIndex = value;
 
         markDirty();
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     public int getRange() {

@@ -4,6 +4,7 @@ import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.bauble.ItemSoundMufflerBauble;
 import com.falsepattern.ssmlegacy.block.BlockSoundMuffler;
+import com.falsepattern.ssmlegacy.block.ItemBlockSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import com.falsepattern.ssmlegacy.compat.waila.SoundMufflerWailaDataProvider;
 import com.falsepattern.ssmlegacy.config.Config;
@@ -26,12 +27,8 @@ public class CommonProxy {
         Config.readConfig(event.getSuggestedConfigurationFile());
         ThePacketeer.init();
 
-        if (event.getSide() == Side.CLIENT) {
-            MinecraftForge.EVENT_BUS.register(SuperSoundMuffler.instance);
-        }
-
         SuperSoundMuffler.blockSoundMuffler = new BlockSoundMuffler();
-        GameRegistry.registerBlock(SuperSoundMuffler.blockSoundMuffler, BlockSoundMuffler.NAME);
+        GameRegistry.registerBlock(SuperSoundMuffler.blockSoundMuffler, ItemBlockSoundMuffler.class, BlockSoundMuffler.NAME);
         GameRegistry.registerTileEntity(TileEntitySoundMuffler.class, Tags.MODID + ":" + BlockSoundMuffler.NAME);
 
         SuperSoundMuffler.itemSoundMufflerBauble = new ItemSoundMufflerBauble();
@@ -39,7 +36,7 @@ public class CommonProxy {
     }
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(SuperSoundMuffler.instance, new GuiHandler());
-        if (Loader.isModLoaded("waila")) {
+        if (Loader.isModLoaded("Waila")) {
             SoundMufflerWailaDataProvider.register();
         }
     }

@@ -35,7 +35,7 @@ import java.util.Set;
 @Mod(modid = Tags.MODID,
      version = Tags.VERSION,
      name = Tags.MODNAME,
-     dependencies = "after:waila")
+     dependencies = "after:Waila;after:Baubles")
 public class SuperSoundMuffler {
     @Mod.Instance(Tags.MODID)
     public static SuperSoundMuffler instance;

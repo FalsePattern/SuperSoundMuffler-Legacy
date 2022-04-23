@@ -2,6 +2,7 @@ package com.falsepattern.ssmlegacy.block;
 
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.gui.GuiHandler;
+import com.falsepattern.ssmlegacy.render.ItemBlockSoundMufflerRenderer;
 import lombok.val;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -11,17 +12,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 
 public class BlockSoundMuffler extends BlockContainer {
     public static final String NAME = "sound_muffler";
-    private static final AxisAlignedBB AABB = AxisAlignedBB.getBoundingBox(0.1, 0.1, 0.1, 0.9, 0.9, 0.9);
 
     public BlockSoundMuffler() {
         super(Material.wood);
@@ -29,6 +25,7 @@ public class BlockSoundMuffler extends BlockContainer {
         setHardness(0.1F);
         setResistance(10.0F);
         setCreativeTab(CreativeTabs.tabDecorations);
+        setBlockBounds(.1f, .1f, .1f, .9f, .9f, .9f);
     }
 
     @Override
@@ -101,68 +98,14 @@ public class BlockSoundMuffler extends BlockContainer {
         return false;
     }
 
-    @Override
-    public boolean isNormalCube() {
-        return false;
-    }
-
-    @Override
-    public boolean isBlockNormalCube() {
-        return false;
-    }
-
-    @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return AABB;
-    }
-
-    @Override
-    public AxisAlignedBB getSelectedBoundingBoxFromPool(World worldIn, int x, int y, int z) {
-        return AABB;
-    }
 
     @Override
     public boolean canRenderInPass(int pass) {
-        return pass == 0;
+        return false;
     }
 
-    // TODO
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag advanced) {
-//        if(stack.hasTagCompound()) {
-//            NBTTagCompound compound = stack.getTagCompound();
-//
-//            boolean showWhiteListTooltip = !compound.hasKey("whiteList") || compound.getBoolean("whiteList");
-//            String key = showWhiteListTooltip ? "item.sound_muffler.tooltip.mode.white_list" : "item.sound_muffler.tooltip.mode.black_list";
-//            tooltip.add(I18n.format(key));
-//
-//            int rangeIndex = compound.hasKey("rangeIndex") ? compound.getInteger("rangeIndex") : TileEntitySoundMuffler.getDefaultRangeIndex();
-//            tooltip.add(I18n.format("item.sound_muffler.tooltip.range", TileEntitySoundMuffler.getRange(rangeIndex)));
-//
-//            if(compound.hasKey("sounds")) {
-//                NBTTagList tagList = compound.getTagList("sounds", 10);
-//                int count = tagList.tagCount();
-//                tooltip.add(I18n.format("item.sound_muffler.tooltip.sounds.count", count));
-//                if(GuiScreen.isShiftKeyDown()) {
-//                    for(int i = 0; i < tagList.tagCount(); ++i) {
-//                        NBTTagCompound sound = tagList.getCompoundTagAt(i);
-//                        tooltip.add(I18n.format("item.sound_muffler.tooltip.sound", sound.getString("sound")));
-//                    }
-//                }
-//            } else {
-//                tooltip.add(I18n.format("item.sound_muffler.tooltip.sounds.count", 0));
-//            }
-//        } else {
-//            tooltip.add(I18n.format("item.sound_muffler.tooltip.mode.white_list"));
-//            tooltip.add(I18n.format("item.sound_muffler.tooltip.range", TileEntitySoundMuffler.getDefaultRange()));
-//            tooltip.add(I18n.format("item.sound_muffler.tooltip.sounds.count", 0));
-//        }
-//    }
-
-    @SideOnly(Side.CLIENT)
-    public void registerModels() {
-        //TODO ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName().toString(), "inventory"));
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySoundMuffler.class, new RenderTileSoundMuffler());
+    @Override
+    public int getRenderType() {
+        return ItemBlockSoundMufflerRenderer.ID;
     }
 }
