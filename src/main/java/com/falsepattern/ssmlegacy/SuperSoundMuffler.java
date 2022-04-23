@@ -94,6 +94,7 @@ public class SuperSoundMuffler {
         return player != null && (tryMuffleBauble(sound, player.inventory) || (baublesPresent && tryMuffleBauble(sound, BaublesApi.getBaubles(player))));
     }
 
+    @SideOnly(Side.CLIENT)
     private boolean tryMuffleBauble(ISound sound, IInventory inventory) {
         for (int slot = 0; slot < inventory.getSizeInventory(); ++slot) {
             val stack = inventory.getStackInSlot(slot);

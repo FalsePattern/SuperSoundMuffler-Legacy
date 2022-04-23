@@ -1,6 +1,8 @@
 package com.falsepattern.ssmlegacy.block;
 
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lombok.val;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.ISound;
@@ -144,6 +146,7 @@ public class TileEntitySoundMuffler extends TileEntity {
         return muffledSounds.contains(soundLocation);
     }
 
+    @SideOnly(Side.CLIENT)
     public boolean shouldMuffleSound(ISound sound) {
         double dist = getDistanceFrom(sound.getXPosF(), sound.getYPosF(), sound.getZPosF());
         int range = getRange();
