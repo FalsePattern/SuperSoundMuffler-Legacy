@@ -36,24 +36,12 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
         setMaxDamage(0);
         setMaxStackSize(1);
         setCreativeTab(CreativeTabs.tabTools);
-//
-//        addPropertyOverride(new ResourceLocation("disabled"), new IItemPropertyGetter() {
-//            @SideOnly(Side.CLIENT)
-//            public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
-//                return isDisabled(stack) ? 1.0f : 0.0F;
-//            }
-//        });
     }
-
-//    @SideOnly(Side.CLIENT)
-//    public void registerModels() {
-//        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName().toString(), "inventory"));
-//    }
 
     @Override
     @Optional.Method(modid = "Baubles")
     public BaubleType getBaubleType (ItemStack itemstack) {
-        return BaubleType.RING;
+        return BaubleType.AMULET;
     }
 
     @Override
