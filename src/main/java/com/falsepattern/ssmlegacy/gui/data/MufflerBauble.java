@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MufflerBauble implements IMufflerAccessor {
-    private EntityPlayer player;
+    private final EntityPlayer player;
 
     public MufflerBauble(EntityPlayer player) {
         this.player = player;
@@ -24,7 +23,7 @@ public class MufflerBauble implements IMufflerAccessor {
 
     @Override
     public boolean isWhiteList() {
-        ItemStack bauble = player.getHeldItemMainhand();
+        ItemStack bauble = player.getHeldItem();
         if(bauble.hasTagCompound()) {
             NBTTagCompound compound = bauble.getTagCompound();
             if(compound.hasKey("whiteList")) {
@@ -39,7 +38,7 @@ public class MufflerBauble implements IMufflerAccessor {
     public List<ResourceLocation> getMuffledSounds() {
         List<ResourceLocation> sounds = new ArrayList<>();
 
-        ItemStack bauble = player.getHeldItemMainhand();
+        ItemStack bauble = player.getHeldItem();
         if(bauble.hasTagCompound()) {
             NBTTagCompound compound = bauble.getTagCompound();
             if(compound.hasKey("sounds")) {
@@ -52,22 +51,22 @@ public class MufflerBauble implements IMufflerAccessor {
             }
         }
 
-        Collections.sort(sounds, Comparator.comparing(ResourceLocation::toString));
+        sounds.sort(Comparator.comparing(ResourceLocation::toString));
         return sounds;
     }
 
     @Override
     public void toggleWhiteList() {
-        ThePacketeer.INSTANCE.sendToServer(new MessageToggleWhiteList(BlockPos.ORIGIN, MessageToggleWhiteList.Type.Bauble));
+        ThePacketeer.INSTANCE.sendToServer(new MessageToggleWhiteList(0, 0, 0, MessageToggleWhiteList.Type.Bauble));
     }
 
     @Override
     public void muffleSound(ResourceLocation sound) {
-        ThePacketeer.INSTANCE.sendToServer(new MessageAddRemoveSound(BlockPos.ORIGIN, sound, MessageAddRemoveSound.Type.Bauble, MessageAddRemoveSound.Action.Add));
+        ThePacketeer.INSTANCE.sendToServer(new MessageAddRemoveSound(0, 0, 0, sound, MessageAddRemoveSound.Type.Bauble, MessageAddRemoveSound.Action.Add));
     }
 
     @Override
     public void unmuffleSound(ResourceLocation sound) {
-        ThePacketeer.INSTANCE.sendToServer(new MessageAddRemoveSound(BlockPos.ORIGIN, sound, MessageAddRemoveSound.Type.Bauble, MessageAddRemoveSound.Action.Remove));
+        ThePacketeer.INSTANCE.sendToServer(new MessageAddRemoveSound(0, 0, 0, sound, MessageAddRemoveSound.Type.Bauble, MessageAddRemoveSound.Action.Remove));
     }
 }
