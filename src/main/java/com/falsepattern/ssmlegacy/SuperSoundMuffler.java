@@ -24,7 +24,6 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
@@ -48,10 +47,8 @@ public class SuperSoundMuffler {
     @SidedProxy(clientSide = Tags.GROUPNAME + ".proxy.ClientProxy", serverSide = Tags.GROUPNAME + ".proxy.CommonProxy")
     public static CommonProxy proxy;
 
-    @GameRegistry.ObjectHolder(BlockSoundMuffler.NAME)
     public static BlockSoundMuffler blockSoundMuffler;
 
-    @GameRegistry.ObjectHolder(ItemSoundMufflerBauble.NAME)
     public static ItemSoundMufflerBauble itemSoundMufflerBauble;
 
     public Queue<ResourceLocation> recentSounds = EvictingQueue.create(16);

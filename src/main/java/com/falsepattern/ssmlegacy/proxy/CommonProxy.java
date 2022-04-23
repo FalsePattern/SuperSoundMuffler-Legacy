@@ -30,16 +30,17 @@ public class CommonProxy {
             MinecraftForge.EVENT_BUS.register(this);
         }
 
-        GameRegistry.registerBlock(new BlockSoundMuffler(), BlockSoundMuffler.NAME);
+        SuperSoundMuffler.blockSoundMuffler = new BlockSoundMuffler();
+        GameRegistry.registerBlock(SuperSoundMuffler.blockSoundMuffler, BlockSoundMuffler.NAME);
         GameRegistry.registerTileEntity(TileEntitySoundMuffler.class, Tags.MODID + ":" + BlockSoundMuffler.NAME);
 
         if (SuperSoundMuffler.isBaublesPresent()) {
-            GameRegistry.registerItem(new ItemSoundMufflerBauble(), ItemSoundMufflerBauble.NAME);
+            SuperSoundMuffler.itemSoundMufflerBauble = new ItemSoundMufflerBauble();
+            GameRegistry.registerItem(SuperSoundMuffler.itemSoundMufflerBauble, ItemSoundMufflerBauble.NAME);
         }
-        GameRegistry.registerItem(new ItemBlock(SuperSoundMuffler.blockSoundMuffler).setUnlocalizedName(SuperSoundMuffler.blockSoundMuffler.getUnlocalizedName()), BlockSoundMuffler.NAME);
     }
     public void init(FMLInitializationEvent event) {
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+        NetworkRegistry.INSTANCE.registerGuiHandler(SuperSoundMuffler.instance, new GuiHandler());
         if (Loader.isModLoaded("waila")) {
             SoundMufflerWailaDataProvider.register();
         }
