@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public class ModelSoundMuffler extends ModelBase {
-    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(Tags.MODID, "textures/block/sound_muffler_atlas.png");
+    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(Tags.MODID, "textures/block/sound_muffler.png");
     private static final ModelSoundMuffler instance = new ModelSoundMuffler();
     private static final TileEntitySoundMuffler te = new TileEntitySoundMuffler();
     public ModelRenderer renderer;
