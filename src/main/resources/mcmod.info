@@ -1,13 +1,13 @@
 [
 {
-  "modid": "supersoundmuffler",
-  "name": "Super Sound Muffler",
+  "modid": "${modId}",
+  "name": "${modName}",
   "description": "A block that allows you to select which sounds to muffle.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
+  "version": "${modVersion}",
+  "mcversion": "${minecraftVersion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["EdgarAllen"],
+  "authorList": ["EdgarAllen", "FalsePattern"],
   "credits": "",
   "logoFile": "",
   "screenshots": [],
