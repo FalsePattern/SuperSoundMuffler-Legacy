@@ -1,5 +1,6 @@
 package com.falsepattern.ssmlegacy.compat.waila;
 
+import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -12,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
@@ -55,12 +55,12 @@ public class SoundMufflerWailaDataProvider implements IWailaDataProvider {
     }
 
     @Override
-    public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
+    public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, int x, int y, int z) {
         return null;
     }
 
     public static void register() {
-        FMLInterModComms.sendMessage("waila", "register", "com.falsepattern.ssmlegacy.compat.waila.SoundMufflerWailaDataProvider.callbackRegister");
+        FMLInterModComms.sendMessage("waila", "register", Tags.GROUPNAME + ".compat.waila.SoundMufflerWailaDataProvider.callbackRegister");
     }
 
     public static void callbackRegister(IWailaRegistrar registrar) {
