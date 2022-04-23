@@ -1,32 +1,50 @@
 package com.falsepattern.ssmlegacy.proxy;
 
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
+import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.bauble.ItemSoundMufflerBauble;
 import com.falsepattern.ssmlegacy.block.BlockSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import com.falsepattern.ssmlegacy.compat.waila.SoundMufflerWailaDataProvider;
+import com.falsepattern.ssmlegacy.config.Config;
+import com.falsepattern.ssmlegacy.gui.GuiHandler;
+import com.falsepattern.ssmlegacy.network.ThePacketeer;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.item.ItemBlock;
-import net.minecraftforge.event.RegistryEvent;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Collections;
 import java.util.Set;
 
-@Mod.EventBusSubscriber
 public class CommonProxy {
-    @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().register(new BlockSoundMuffler());
-        GameRegistry.registerTileEntity(TileEntitySoundMuffler.class, SuperSoundMuffler.MOD_ID + ":" + BlockSoundMuffler.NAME);
+
+    public void preInit(FMLPreInitializationEvent event) {
+        Config.readConfig(event.getSuggestedConfigurationFile());
+        ThePacketeer.init();
+
+        if (event.getSide() == Side.CLIENT) {
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        GameRegistry.registerBlock(new BlockSoundMuffler(), BlockSoundMuffler.NAME);
+        GameRegistry.registerTileEntity(TileEntitySoundMuffler.class, Tags.MODID + ":" + BlockSoundMuffler.NAME);
+
+        GameRegistry.registerItem(new ItemSoundMufflerBauble(), ItemSoundMufflerBauble.NAME);
+        GameRegistry.registerItem(new ItemBlock(SuperSoundMuffler.blockSoundMuffler).setUnlocalizedName(SuperSoundMuffler.blockSoundMuffler.getUnlocalizedName()), BlockSoundMuffler.NAME);
+    }
+    public void init(FMLInitializationEvent event) {
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+        if (Loader.isModLoaded("waila")) {
+            SoundMufflerWailaDataProvider.register();
+        }
     }
 
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().register(new ItemSoundMufflerBauble());
-        event.getRegistry().register(new ItemBlock(SuperSoundMuffler.blockSoundMuffler).setRegistryName(SuperSoundMuffler.blockSoundMuffler.getRegistryName()));
+    public void postInit(FMLPostInitializationEvent event) {
+
     }
 
     public void cacheMuffler(TileEntitySoundMuffler tileEntity) { }

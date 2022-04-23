@@ -1,6 +1,7 @@
 package com.falsepattern.ssmlegacy.gui;
 
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
+import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import com.falsepattern.ssmlegacy.gui.data.IMufflerAccessor;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -30,7 +31,7 @@ import java.util.*;
 @SideOnly(Side.CLIENT)
 public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
 
-    private static final ResourceLocation guiTexture = new ResourceLocation(SuperSoundMuffler.MOD_ID, "textures/gui/sound_muffler.png");
+    private static final ResourceLocation guiTexture = new ResourceLocation(Tags.MODID, "textures/gui/sound_muffler.png");
 
     private final IMufflerAccessor muffler;
 
@@ -115,7 +116,7 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRendererObj.drawString(SuperSoundMuffler.NAME, 8, 9, 0x404040);
+        fontRendererObj.drawString(Tags.MODNAME, 8, 9, 0x404040);
     }
 
     @Override

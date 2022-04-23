@@ -1,6 +1,7 @@
 package com.falsepattern.ssmlegacy.gui;
 
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
+import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.gui.data.IMufflerAccessor;
 import lombok.val;
 import net.minecraft.client.Minecraft;
@@ -28,7 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GuiSoundMufflerAddSound extends GuiContainer {
-    private static final ResourceLocation guiTexture = new ResourceLocation(SuperSoundMuffler.MOD_ID, "textures/gui/sound_muffler_add_sound.png");
+    private static final ResourceLocation guiTexture = new ResourceLocation(Tags.MODID, "textures/gui/sound_muffler_add_sound.png");
 
     private static final int KEYCODE_ENTER = 28;
     private static final int KEYCODE_KP_ENTER = 156;
