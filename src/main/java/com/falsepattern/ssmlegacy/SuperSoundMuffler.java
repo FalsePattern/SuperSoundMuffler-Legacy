@@ -69,27 +69,26 @@ public class SuperSoundMuffler {
         proxy.postInit(event);
     }
 
-    @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    public void onPlaySound(SoundEvent.SoundSourceEvent event) {
+    public boolean shouldMuffle(ISound sound) {
         WorldClient world = Minecraft.getMinecraft().theWorld;
         if (world != null) {
-            ISound sound = event.sound;
 
-            if (tryMuffleBauble(event, sound)) {
-                return;
+            if (tryMuffleBauble(sound)) {
+                return true;
             }
 
-            if (tryMuffleBlock(event, world, sound)) {
-                return;
+            if (tryMuffleBlock(world, sound)) {
+                return true;
             }
 
             recentSounds.offer(sound.getPositionedSoundLocation());
         }
+        return false;
     }
 
     @SideOnly(Side.CLIENT)
-    private boolean tryMuffleBauble(SoundEvent event, ISound sound) {
+    private boolean tryMuffleBauble(ISound sound) {
         val player = Minecraft.getMinecraft().thePlayer;
         if (player != null) {
             val inventory = player.inventory;
@@ -97,7 +96,6 @@ public class SuperSoundMuffler {
                 val stack = inventory.getStackInSlot(slot);
                 if (stack != null && stack.getItem() == itemSoundMufflerBauble) {
                     if (itemSoundMufflerBauble.shouldMuffleSound(stack, sound.getPositionedSoundLocation())) {
-                        event.setCanceled(true);
                         return true;
                     }
                 }
@@ -109,7 +107,6 @@ public class SuperSoundMuffler {
                     val stack = baubles.getStackInSlot(slot);
                     if (stack != null && stack.getItem() == itemSoundMufflerBauble) {
                         if (itemSoundMufflerBauble.shouldMuffleSound(stack, sound.getPositionedSoundLocation())) {
-                            event.setCanceled(true);
                             return true;
                         }
                     }
@@ -120,11 +117,10 @@ public class SuperSoundMuffler {
     }
 
     @SideOnly(Side.CLIENT)
-    private boolean tryMuffleBlock(SoundEvent event, WorldClient world, ISound sound) {
+    private boolean tryMuffleBlock(WorldClient world, ISound sound) {
         Set<TileEntitySoundMuffler> mufflers = SuperSoundMuffler.proxy.getTileEntities();
         for (TileEntitySoundMuffler tile : mufflers) {
             if (!tile.isInvalid() && world == tile.getWorldObj() && tile.shouldMuffleSound(sound)) {
-                event.setCanceled(true);
                 return true;
             }
         }

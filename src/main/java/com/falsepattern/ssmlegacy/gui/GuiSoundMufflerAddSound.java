@@ -4,6 +4,7 @@ import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.gui.data.IMufflerAccessor;
 import com.falsepattern.ssmlegacy.mixin.interfaces.IGuiScrollingListMixin;
+import com.falsepattern.ssmlegacy.mixin.interfaces.ISoundHandlerMixin;
 import lombok.val;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
@@ -77,24 +78,14 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
     }
 
     private Set<ResourceLocation> getSoundList() {
-        boolean isDeobf = false;
-        try {
-            final Field f = CoreModManager.class.getDeclaredField("deobfuscatedEnvironment");
-            f.setAccessible(true);
-            isDeobf = f.getBoolean(null);
-        } catch (@Nonnull final Throwable t) {
-            SuperSoundMuffler.log.error("Are we in a dev environment? No clue... Error'd before I could find out. RIP", t);
-        }
         Set<ResourceLocation> sounds = Collections.EMPTY_SET;
         try {
-            final Field f = SoundHandler.class.getDeclaredField(isDeobf ? "soundRegistry": "field_147697_e");
-            f.setAccessible(true);
-            SoundRegistry registry = (SoundRegistry) f.get(Minecraft.getMinecraft().getSoundHandler());
+            val registry = ((ISoundHandlerMixin) Minecraft.getMinecraft().getSoundHandler()).getSoundRegistry();
 
             if(registry != null) {
                 sounds = registry.getKeys();
             }
-        } catch (@Nonnull final Throwable t) {
+        } catch (Throwable t) {
             SuperSoundMuffler.log.error("Couldn't access sound registry for sounds list", t);
         }
 

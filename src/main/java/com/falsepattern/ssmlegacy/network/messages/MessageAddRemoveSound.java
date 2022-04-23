@@ -48,6 +48,7 @@ public class MessageAddRemoveSound implements IMessage {
     public static class Handler implements IMessageHandler<MessageAddRemoveSound, IMessage> {
         @Override
         public IMessage onMessage(final MessageAddRemoveSound message, final MessageContext ctx) {
+
             switch (message.type) {
                 case Bauble:
                     handleBauble(message, ctx);

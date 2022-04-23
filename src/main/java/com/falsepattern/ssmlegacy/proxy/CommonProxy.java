@@ -27,7 +27,7 @@ public class CommonProxy {
         ThePacketeer.init();
 
         if (event.getSide() == Side.CLIENT) {
-            MinecraftForge.EVENT_BUS.register(this);
+            MinecraftForge.EVENT_BUS.register(SuperSoundMuffler.instance);
         }
 
         SuperSoundMuffler.blockSoundMuffler = new BlockSoundMuffler();

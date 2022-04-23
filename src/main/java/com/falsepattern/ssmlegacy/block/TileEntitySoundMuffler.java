@@ -102,12 +102,14 @@ public class TileEntitySoundMuffler extends TileEntity {
         muffledSounds.add(sound);
 
         markDirty();
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     public void unmuffleSound(ResourceLocation sound) {
         muffledSounds.remove(sound);
 
         markDirty();
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     public List<ResourceLocation> getMuffledSounds() {
@@ -118,6 +120,7 @@ public class TileEntitySoundMuffler extends TileEntity {
         whiteListMode = !whiteListMode;
 
         markDirty();
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     public boolean isWhiteList() { return whiteListMode; }
