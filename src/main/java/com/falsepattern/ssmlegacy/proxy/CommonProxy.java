@@ -16,6 +16,9 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 
 import java.util.Collections;
 import java.util.Set;
@@ -39,6 +42,9 @@ public class CommonProxy {
         if (Loader.isModLoaded("Waila")) {
             SoundMufflerWailaDataProvider.register();
         }
+
+        GameRegistry.addRecipe(new ItemStack(SuperSoundMuffler.blockSoundMuffler), " W ", "WNW", " W ", 'W', Blocks.wool, 'N', Blocks.noteblock);
+        GameRegistry.addRecipe(new ItemStack(SuperSoundMuffler.itemSoundMufflerBauble), " S ", "S S", " M ", 'S', Items.string, 'M', SuperSoundMuffler.blockSoundMuffler);
     }
 
     public void postInit(FMLPostInitializationEvent event) {
@@ -51,5 +57,5 @@ public class CommonProxy {
 
     public void clearCache() {}
 
-    public Set<TileEntitySoundMuffler> getTileEntities() {return Collections.EMPTY_SET;}
+    public Set<TileEntitySoundMuffler> getTileEntities() {return Collections.emptySet();}
 }
