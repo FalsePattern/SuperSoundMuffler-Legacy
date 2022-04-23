@@ -2,63 +2,50 @@ package com.falsepattern.ssmlegacy.network.messages;
 
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.val;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageSetRange implements IMessage {
-    BlockPos pos;
+    int x;
+    int y;
+    int z;
     int rangeIndex;
-
-    public MessageSetRange() { }
-
-    public MessageSetRange(BlockPos pos, int value) {
-        this.pos = pos;
-        this.rangeIndex = value;
-    }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+        x = buf.readInt();
+        y = buf.readInt();
+        z = buf.readInt();
         rangeIndex = buf.readInt();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(pos.getX());
-        buf.writeInt(pos.getY());
-        buf.writeInt(pos.getZ());
+        buf.writeInt(x);
+        buf.writeInt(y);
+        buf.writeInt(z);
         buf.writeInt(rangeIndex);
     }
 
+    @NoArgsConstructor
     public static class Handler implements IMessageHandler<MessageSetRange, IMessage> {
-        public Handler() { }
-
         @Override
         public IMessage onMessage(final MessageSetRange message, final MessageContext ctx) {
-            IThreadListener thread = FMLCommonHandler.instance().getWorldThread(ctx.netHandler);
-            if (thread.isCallingFromMinecraftThread()) {
-                handle(message,ctx);
-            } else {
-                thread.addScheduledTask(() -> handle(message, ctx));
+            val world = ctx.getServerHandler().playerEntity.getEntityWorld();
+            val te = world.getTileEntity(message.x, message.y, message.z);
+
+            if (te instanceof TileEntitySoundMuffler) {
+                val tileEntity = (TileEntitySoundMuffler) te;
+                tileEntity.setRange(message.rangeIndex);
             }
 
             return null;
-        }
-
-        private void handle(MessageSetRange message, MessageContext ctx) {
-            World world = ctx.getServerHandler().player.world;
-            TileEntity te = world.getTileEntity(message.pos);
-
-            if (te != null && te instanceof TileEntitySoundMuffler) {
-                TileEntitySoundMuffler tileEntity = (TileEntitySoundMuffler) te;
-                tileEntity.setRange(message.rangeIndex);
-            }
         }
     }
 }

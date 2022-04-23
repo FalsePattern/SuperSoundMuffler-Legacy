@@ -3,61 +3,44 @@ package com.falsepattern.ssmlegacy.network.messages;
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.val;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import static com.falsepattern.ssmlegacy.network.messages.MessageToggleWhiteList.Type.Bauble;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageToggleWhiteList implements IMessage {
 
-    BlockPos pos;
+    int x;
+    int y;
+    int z;
     Type type;
-
-    public MessageToggleWhiteList() { }
-
-    public MessageToggleWhiteList(BlockPos pos, Type type) {
-        this.pos = pos;
-        this.type = type;
-    }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+        x = buf.readInt();
+        y = buf.readInt();
+        z = buf.readInt();
         type = buf.readBoolean() ? Type.Bauble : Type.TileEntity;
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(pos.getX());
-        buf.writeInt(pos.getY());
-        buf.writeInt(pos.getZ());
+        buf.writeInt(x);
+        buf.writeInt(y);
+        buf.writeInt(z);
         buf.writeBoolean(type == Bauble);
     }
 
+    @NoArgsConstructor
     public static class Handler implements IMessageHandler<MessageToggleWhiteList, IMessage> {
-        public Handler() { }
-
         @Override
         public IMessage onMessage(final MessageToggleWhiteList message, final MessageContext ctx) {
-            IThreadListener thread = FMLCommonHandler.instance().getWorldThread(ctx.netHandler);
-            if (thread.isCallingFromMinecraftThread()) {
-                handle(message,ctx);
-            } else {
-                thread.addScheduledTask(() -> handle(message, ctx));
-            }
-
-            return null;
-        }
-
-        private void handle(MessageToggleWhiteList message, MessageContext ctx) {
             switch (message.type) {
                 case Bauble:
                     handleBauble(message, ctx);
@@ -66,24 +49,26 @@ public class MessageToggleWhiteList implements IMessage {
                     handleTileEntity(message, ctx);
                     break;
             }
+
+            return null;
         }
 
         private void handleBauble(MessageToggleWhiteList message, MessageContext ctx) {
-            EntityPlayer player = ctx.getServerHandler().player;
+            val player = ctx.getServerHandler().playerEntity;
             if(player != null) {
-                ItemStack stack = player.getHeldItemMainhand();
-                if(!stack.isEmpty() && stack.getItem() == SuperSoundMuffler.itemSoundMufflerBauble) {
+                val stack = player.getHeldItem();
+                if(stack != null && stack.getItem() == SuperSoundMuffler.itemSoundMufflerBauble) {
                     SuperSoundMuffler.itemSoundMufflerBauble.toggleWhiteList(stack);
                 }
             }
         }
 
         private void handleTileEntity(MessageToggleWhiteList message, MessageContext ctx) {
-            World world = ctx.getServerHandler().player.world;
-            TileEntity te = world.getTileEntity(message.pos);
+            val world = ctx.getServerHandler().playerEntity.getEntityWorld();
+            val te = world.getTileEntity(message.x, message.y, message.z);
 
-            if (te != null && te instanceof TileEntitySoundMuffler) {
-                TileEntitySoundMuffler tileEntity = (TileEntitySoundMuffler) te;
+            if (te instanceof TileEntitySoundMuffler) {
+                val tileEntity = (TileEntitySoundMuffler) te;
                 tileEntity.toggleWhiteListMode();
             }
         }

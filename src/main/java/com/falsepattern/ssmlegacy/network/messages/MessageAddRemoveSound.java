@@ -3,38 +3,32 @@ package com.falsepattern.ssmlegacy.network.messages;
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IThreadListener;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageAddRemoveSound implements IMessage {
 
-    private BlockPos pos;
+    private int x;
+    private int y;
+    private int z;
     private ResourceLocation sound;
     private Type type;
     private Action action;
 
-    public MessageAddRemoveSound() { }
-
-    public MessageAddRemoveSound(BlockPos pos, ResourceLocation sound, Type type, Action action) {
-        this.pos = pos;
-        this.sound = sound;
-        this.type = type;
-        this.action = action;
-    }
-
     @Override
     public void fromBytes(ByteBuf buf) {
-        pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+        x = buf.readInt();
+        y = buf.readInt();
+        z = buf.readInt();
         sound = new ResourceLocation(ByteBufUtils.readUTF8String(buf));
         type = buf.readBoolean() ? Type.Bauble : Type.TileEntity;
         action = buf.readBoolean() ? Action.Add : Action.Remove;
@@ -42,30 +36,18 @@ public class MessageAddRemoveSound implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(pos.getX());
-        buf.writeInt(pos.getY());
-        buf.writeInt(pos.getZ());
+        buf.writeInt(x);
+        buf.writeInt(y);
+        buf.writeInt(z);
         ByteBufUtils.writeUTF8String(buf, sound.toString());
         buf.writeBoolean(type == Type.Bauble);
         buf.writeBoolean(action == Action.Add);
     }
 
+    @NoArgsConstructor
     public static class Handler implements IMessageHandler<MessageAddRemoveSound, IMessage> {
-        public Handler() { }
-
         @Override
         public IMessage onMessage(final MessageAddRemoveSound message, final MessageContext ctx) {
-            IThreadListener thread = FMLCommonHandler.instance().getWorldThread(ctx.netHandler);
-            if (thread.isCallingFromMinecraftThread()) {
-                handle(message,ctx);
-            } else {
-                thread.addScheduledTask(() -> handle(message, ctx));
-            }
-
-            return null;
-        }
-
-        private void handle(MessageAddRemoveSound message, MessageContext ctx) {
             switch (message.type) {
                 case Bauble:
                     handleBauble(message, ctx);
@@ -74,13 +56,15 @@ public class MessageAddRemoveSound implements IMessage {
                     handleTileEntity(message, ctx);
                     break;
             }
+
+            return null;
         }
 
         private void handleBauble(MessageAddRemoveSound message, MessageContext ctx) {
-            EntityPlayer player = ctx.getServerHandler().player;
+            val player = ctx.getServerHandler().playerEntity;
             if (player != null) {
-                ItemStack stack = player.getHeldItemMainhand();
-                if(!stack.isEmpty() && stack.getItem() == SuperSoundMuffler.itemSoundMufflerBauble) {
+                val stack = player.getHeldItem();
+                if(stack != null && stack.getItem() == SuperSoundMuffler.itemSoundMufflerBauble) {
                     if(message.action == Action.Add) {
                         SuperSoundMuffler.itemSoundMufflerBauble.muffleSound(stack, message.sound);
                     } else {
@@ -91,10 +75,10 @@ public class MessageAddRemoveSound implements IMessage {
         }
 
         private void handleTileEntity(MessageAddRemoveSound message, MessageContext ctx) {
-            World world = ctx.getServerHandler().player.world;
-            TileEntity te = world.getTileEntity(message.pos);
-            if (te != null && te instanceof TileEntitySoundMuffler) {
-                TileEntitySoundMuffler tileEntity = (TileEntitySoundMuffler) te;
+            val world = ctx.getServerHandler().playerEntity.getEntityWorld();
+            val te = world.getTileEntity(message.x, message.y, message.z);
+            if (te instanceof TileEntitySoundMuffler) {
+                val tileEntity = (TileEntitySoundMuffler) te;
                 if(message.action == Action.Add) {
                     tileEntity.muffleSound(message.sound);
                 } else {
