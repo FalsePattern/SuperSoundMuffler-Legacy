@@ -28,17 +28,17 @@ public class MufflerTileEntity implements IMufflerAccessor {
 
     @Override
     public void toggleWhiteList() {
-        ThePacketeer.INSTANCE.sendToServer(new MessageToggleWhiteList(tileEntity.getPos(), MessageToggleWhiteList.Type.TileEntity));
+        ThePacketeer.INSTANCE.sendToServer(new MessageToggleWhiteList(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, MessageToggleWhiteList.Type.TileEntity));
     }
 
     @Override
     public void muffleSound(ResourceLocation sound) {
-        ThePacketeer.INSTANCE.sendToServer(new MessageAddRemoveSound(tileEntity.getPos(), sound, MessageAddRemoveSound.Type.TileEntity, MessageAddRemoveSound.Action.Add));
+        ThePacketeer.INSTANCE.sendToServer(new MessageAddRemoveSound(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, sound, MessageAddRemoveSound.Type.TileEntity, MessageAddRemoveSound.Action.Add));
     }
 
     @Override
     public void unmuffleSound(ResourceLocation sound) {
-        ThePacketeer.INSTANCE.sendToServer(new MessageAddRemoveSound(tileEntity.getPos(), sound, MessageAddRemoveSound.Type.TileEntity, MessageAddRemoveSound.Action.Remove));
+        ThePacketeer.INSTANCE.sendToServer(new MessageAddRemoveSound(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, sound, MessageAddRemoveSound.Type.TileEntity, MessageAddRemoveSound.Action.Remove));
     }
 
     @Override
@@ -58,6 +58,6 @@ public class MufflerTileEntity implements IMufflerAccessor {
 
     @Override
     public void setRange(int value) {
-        ThePacketeer.INSTANCE.sendToServer(new MessageSetRange(tileEntity.getPos(), value));
+        ThePacketeer.INSTANCE.sendToServer(new MessageSetRange(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, value));
     }
 }
