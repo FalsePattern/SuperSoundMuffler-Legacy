@@ -5,7 +5,12 @@ import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import com.falsepattern.ssmlegacy.gui.data.IMufflerAccessor;
 import com.falsepattern.ssmlegacy.mixin.interfaces.IGuiScrollingListMixin;
-import lombok.SneakyThrows;
+import cpw.mods.fml.client.GuiScrollingList;
+import cpw.mods.fml.client.config.GuiButtonExt;
+import cpw.mods.fml.client.config.GuiSlider;
+import cpw.mods.fml.client.config.GuiUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lombok.val;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -16,16 +21,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.client.GuiScrollingList;
-import cpw.mods.fml.client.config.GuiButtonExt;
-import cpw.mods.fml.client.config.GuiSlider;
-import cpw.mods.fml.client.config.GuiUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 import java.util.*;
 
 @SideOnly(Side.CLIENT)
@@ -64,11 +62,11 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
         addSoundButton = new GuiButtonExt(1, guiLeft + 159, guiTop + 151, 44, 14, I18n.format("tile.sound_muffler.gui.button.add"));
         buttonList.add(addSoundButton);
 
-        removeSoundButton = new GuiButtonExt(2, guiLeft + 205, guiTop + 151,44, 14, I18n.format("tile.sound_muffler.gui.button.remove"));
+        removeSoundButton = new GuiButtonExt(2, guiLeft + 205, guiTop + 151, 44, 14, I18n.format("tile.sound_muffler.gui.button.remove"));
         removeSoundButton.enabled = false;
         buttonList.add(removeSoundButton);
 
-        if(muffler.isRanged()) {
+        if (muffler.isRanged()) {
             rangeSlider = new GuiSliderExt(3, guiLeft + 7, guiTop + 151, 128, 14, I18n.format("tile.sound_muffler.gui.slider.range"), "", 0f, 19f, muffler.getRangeIndex(), false, false, this);
             buttonList.add(rangeSlider);
         }
@@ -94,7 +92,7 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if(button.enabled) {
+        if (button.enabled) {
             if (button.id == modeButton.id) {
                 muffler.toggleWhiteList();
                 String key = muffler.isWhiteList() ? "tile.sound_muffler.gui.button.mode.white_list" : "tile.sound_muffler.gui.button.mode.black_list";
@@ -102,10 +100,10 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
             } else if (button.id == addSoundButton.id) {
                 Set<ResourceLocation> unique = new HashSet<>(SuperSoundMuffler.instance.recentSounds);
                 Minecraft.getMinecraft().displayGuiScreen(new GuiSoundMufflerAddSound(this, muffler, new ArrayList<>(unique)));
-            } else if(button.id == removeSoundButton.id) {
+            } else if (button.id == removeSoundButton.id) {
                 List<ResourceLocation> selectedSounds = soundList.getSelectedSounds();
-                for(ResourceLocation sound : selectedSounds) {
-                    if(sound != null) {
+                for (ResourceLocation sound : selectedSounds) {
+                    if (sound != null) {
                         muffler.unmuffleSound(sound);
                     }
                 }
@@ -141,7 +139,7 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
     private final class GuiSoundList extends GuiScrollingList {
         private List<ResourceLocation> sounds;
         private final int slotHeight;
-        private List<Integer> selectedIndicies = new ArrayList<>();
+        private final List<Integer> selectedIndicies = new ArrayList<>();
 
         GuiSoundList(int width, int height, int top, int bottom, int left, int slotHeight) {
             super(Minecraft.getMinecraft(), width, height, top, bottom, left, slotHeight);
@@ -155,15 +153,15 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
 
         @Override
         protected void elementClicked(int index, boolean doubleClick) {
-            if(isCtrlKeyDown()) {
-                if(isSelected(index)) {
+            if (isCtrlKeyDown()) {
+                if (isSelected(index)) {
                     removeSelection(index);
                 } else {
                     selectIndex(index);
                 }
-            } else if(isShiftKeyDown()) {
+            } else if (isShiftKeyDown()) {
                 clearSelection();
-                val selectedIndex = ((IGuiScrollingListMixin)(Object)this).getSelectedIndex();
+                val selectedIndex = ((IGuiScrollingListMixin) (Object) this).getSelectedIndex();
                 int start = Math.min(index, selectedIndex);
                 int end = Math.max(index, selectedIndex);
                 selectRange(start, end);
@@ -175,8 +173,8 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
 
         @Override
         protected boolean isSelected(int index) {
-            for(int i : selectedIndicies) {
-                if(i == index) {
+            for (int i : selectedIndicies) {
+                if (i == index) {
                     return true;
                 }
             }
@@ -184,8 +182,8 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
         }
 
         void removeSelection(int index) {
-            for(int i = 0; i < selectedIndicies.size(); i++) {
-                if(selectedIndicies.get(i) == index) {
+            for (int i = 0; i < selectedIndicies.size(); i++) {
+                if (selectedIndicies.get(i) == index) {
                     selectedIndicies.remove(i);
                     return;
                 }
@@ -195,7 +193,7 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
         void selectIndex(int index) {
             removeSelection(index);
             selectedIndicies.add(index);
-            ((IGuiScrollingListMixin)(Object)this).setSelectedIndex(index);
+            ((IGuiScrollingListMixin) (Object) this).setSelectedIndex(index);
         }
 
         void clearSelection() {
@@ -203,14 +201,14 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
         }
 
         void selectRange(int start, int end) {
-            for(int i = start; i <= end; i++) {
+            for (int i = start; i <= end; i++) {
                 selectedIndicies.add(i);
             }
-            ((IGuiScrollingListMixin)(Object)this).setSelectedIndex(end);
+            ((IGuiScrollingListMixin) (Object) this).setSelectedIndex(end);
         }
 
         @Override
-        protected void drawBackground() { }
+        protected void drawBackground() {}
 
         @Override
         protected int getContentHeight() {
@@ -220,19 +218,19 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
         @Override
         protected void drawSlot(int idx, int right, int top, int height, Tessellator tess) {
             ResourceLocation sound = sounds.get(idx);
-            fontRendererObj.drawString(fontRendererObj.trimStringToWidth(sound.toString(), listWidth - 10), left + 3 , top +  2, 0xCCCCCC);
+            fontRendererObj.drawString(fontRendererObj.trimStringToWidth(sound.toString(), listWidth - 10), left + 3, top + 2, 0xCCCCCC);
         }
 
         void setSounds(List<ResourceLocation> sounds) {
             this.sounds = sounds;
         }
 
-        boolean hasSelectedElements() { return selectedIndicies.size() > 0; }
+        boolean hasSelectedElements() {return selectedIndicies.size() > 0;}
 
         List<ResourceLocation> getSelectedSounds() {
             List<ResourceLocation> ret = new ArrayList<>();
 
-            for(int i : selectedIndicies) {
+            for (int i : selectedIndicies) {
                 ret.add(sounds.get(i));
             }
 
@@ -241,7 +239,9 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
     }
 
     private static final class GuiSliderExt extends GuiSlider {
-        GuiSliderExt(int id, int xPos, int yPos, int width, int height, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, boolean drawStr, @Nullable ISlider par) {
+        GuiSliderExt(int id, int xPos, int yPos, int width, int height, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, boolean drawStr,
+                     @Nullable
+                             ISlider par) {
             super(id, xPos, yPos, width, height, prefix, suf, minVal, maxVal, currentVal, showDec, drawStr, par);
             displayString = dispString + " " + TileEntitySoundMuffler.getRange(getValueInt());
         }
@@ -250,12 +250,12 @@ public class GuiSoundMuffler extends GuiContainer implements GuiSlider.ISlider {
         protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
             if (this.visible) {
                 if (this.dragging) {
-                    this.sliderValue = (mouseX - (this.xPosition + 4)) / (float)(this.width - 8);
+                    this.sliderValue = (mouseX - (this.xPosition + 4)) / (float) (this.width - 8);
                     updateSlider();
                 }
                 GL11.glColor4f(1, 1, 1, 1);
 
-                GuiUtils.drawContinuousTexturedBox(buttonTextures, this.xPosition + (int)(this.sliderValue * (float)(this.width - 8)), this.yPosition, 0, 66, 8, height, 200, 20, 2, 3, 2, 2, zLevel);
+                GuiUtils.drawContinuousTexturedBox(buttonTextures, this.xPosition + (int) (this.sliderValue * (float) (this.width - 8)), this.yPosition, 0, 66, 8, height, 200, 20, 2, 3, 2, 2, zLevel);
             }
         }
     }

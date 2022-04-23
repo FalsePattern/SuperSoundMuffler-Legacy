@@ -5,6 +5,9 @@ import baubles.api.IBauble;
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.gui.GuiHandler;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.I18n;
@@ -18,13 +21,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-@Optional.Interface(modid = "Baubles", iface = "baubles.api.IBauble")
+@Optional.Interface(modid = "Baubles",
+                    iface = "baubles.api.IBauble")
 public class ItemSoundMufflerBauble extends Item implements IBauble {
     private IIcon disabledIcon;
     public static final String NAME = "sound_muffler_bauble";
@@ -40,7 +41,7 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
 
     @Override
     @Optional.Method(modid = "Baubles")
-    public BaubleType getBaubleType (ItemStack itemstack) {
+    public BaubleType getBaubleType(ItemStack itemstack) {
         return BaubleType.AMULET;
     }
 
@@ -105,19 +106,19 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean flagIn) {
         tooltip.add(I18n.format("item.sound_muffler_bauble.tooltip.header"));
 
-        if(stack.hasTagCompound()) {
+        if (stack.hasTagCompound()) {
             NBTTagCompound compound = stack.getTagCompound();
 
             boolean showWhiteListTooltip = !compound.hasKey("whiteList") || compound.getBoolean("whiteList");
             String key = showWhiteListTooltip ? "item.sound_muffler.tooltip.mode.white_list" : "item.sound_muffler.tooltip.mode.black_list";
             tooltip.add(I18n.format(key));
 
-            if(compound.hasKey("sounds")) {
+            if (compound.hasKey("sounds")) {
                 NBTTagList tagList = compound.getTagList("sounds", 10);
                 int count = tagList.tagCount();
                 tooltip.add(I18n.format("item.sound_muffler.tooltip.sounds.count", count));
-                if(GuiScreen.isShiftKeyDown()) {
-                    for(int i = 0; i < tagList.tagCount(); ++i) {
+                if (GuiScreen.isShiftKeyDown()) {
+                    for (int i = 0; i < tagList.tagCount(); ++i) {
                         NBTTagCompound sound = tagList.getCompoundTagAt(i);
                         tooltip.add(I18n.format("item.sound_muffler.tooltip.sound", sound.getString("sound")));
                     }
@@ -132,15 +133,15 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
     }
 
     public boolean shouldMuffleSound(ItemStack stack, ResourceLocation sound) {
-        if(!stack.hasTagCompound()) { return false; }
+        if (!stack.hasTagCompound()) {return false;}
 
         NBTTagCompound compound = stack.getTagCompound();
-        if(compound.hasKey("disabled")) { return false; }
+        if (compound.hasKey("disabled")) {return false;}
 
         boolean isWhiteList = compound.hasKey("whiteList") && compound.getBoolean("whiteList");
-        if(compound.hasKey("sounds")) {
+        if (compound.hasKey("sounds")) {
             NBTTagList tags = compound.getTagList("sounds", 10);
-            if(containsSound(tags, sound)) {
+            if (containsSound(tags, sound)) {
                 return !isWhiteList;
             }
         }
@@ -151,9 +152,9 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
     public void toggleWhiteList(ItemStack stack) {
         boolean isWhiteList = false;
 
-        if(stack.hasTagCompound()) {
+        if (stack.hasTagCompound()) {
             NBTTagCompound compound = stack.getTagCompound();
-            if(compound.hasKey("whiteList")) {
+            if (compound.hasKey("whiteList")) {
                 isWhiteList = compound.getBoolean("whiteList");
             }
 
@@ -171,7 +172,7 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
         NBTTagCompound compound = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
         NBTTagList tags = compound.hasKey("sounds") ? compound.getTagList("sounds", 10) : new NBTTagList();
 
-        if(containsSound(tags, sound)) {
+        if (containsSound(tags, sound)) {
             return;
         }
 
@@ -183,15 +184,15 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
     }
 
     public void unmuffleSound(ItemStack stack, ResourceLocation sound) {
-        if(stack.hasTagCompound()) {
+        if (stack.hasTagCompound()) {
             NBTTagCompound compound = stack.getTagCompound();
             if (compound.hasKey("sounds")) {
                 NBTTagList tags = compound.getTagList("sounds", 10);
                 NBTTagList newTags = new NBTTagList();
-                for(int i = 0; i < tags.tagCount(); ++i) {
+                for (int i = 0; i < tags.tagCount(); ++i) {
                     NBTTagCompound s = tags.getCompoundTagAt(i);
                     String soundLocation = s.getString("sound");
-                    if(!soundLocation.equals(sound.toString())) {
+                    if (!soundLocation.equals(sound.toString())) {
                         newTags.appendTag(s);
                     }
                 }
@@ -202,10 +203,10 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
     }
 
     private boolean containsSound(NBTTagList tags, ResourceLocation sound) {
-        for(int i = 0; i < tags.tagCount(); ++i) {
+        for (int i = 0; i < tags.tagCount(); ++i) {
             NBTTagCompound s = tags.getCompoundTagAt(i);
             String soundLocation = s.getString("sound");
-            if(soundLocation.equals(sound.toString())) {
+            if (soundLocation.equals(sound.toString())) {
                 return true;
             }
         }
@@ -214,7 +215,7 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
     }
 
     private boolean isDisabled(ItemStack stack) {
-        if(stack.hasTagCompound()) {
+        if (stack.hasTagCompound()) {
             NBTTagCompound compound = stack.getTagCompound();
             return compound.hasKey("disabled");
         }
@@ -223,9 +224,9 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
     }
 
     private void toggleDisabled(EntityPlayer playerIn, ItemStack stack) {
-        if(stack.hasTagCompound()) {
+        if (stack.hasTagCompound()) {
             NBTTagCompound compound = stack.getTagCompound();
-            if(compound.hasKey("disabled")) {
+            if (compound.hasKey("disabled")) {
                 compound.removeTag("disabled");
                 stack.setTagCompound(compound);
                 playerIn.playSound("random.orb", 0.1F, 1F);

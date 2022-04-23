@@ -2,13 +2,13 @@ package com.falsepattern.ssmlegacy.network.messages;
 
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 import static com.falsepattern.ssmlegacy.network.messages.MessageToggleWhiteList.Type.Bauble;
 
@@ -55,9 +55,9 @@ public class MessageToggleWhiteList implements IMessage {
 
         private void handleBauble(MessageToggleWhiteList message, MessageContext ctx) {
             val player = ctx.getServerHandler().playerEntity;
-            if(player != null) {
+            if (player != null) {
                 val stack = player.getHeldItem();
-                if(stack != null && stack.getItem() == SuperSoundMuffler.itemSoundMufflerBauble) {
+                if (stack != null && stack.getItem() == SuperSoundMuffler.itemSoundMufflerBauble) {
                     SuperSoundMuffler.itemSoundMufflerBauble.toggleWhiteList(stack);
                 }
             }

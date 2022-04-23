@@ -13,8 +13,6 @@ import java.util.Random;
 
 @SideOnly(Side.CLIENT)
 public class RenderTileSoundMuffler extends TileEntitySpecialRenderer {
-    //private static final ModelResourceLocation MODEL_LOCATION = new ModelResourceLocation(SuperSoundMuffler.MOD_ID + ":" + BlockSoundMuffler.NAME, "inventory");
-
     /**
      * Code commandeered from Botania[https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/client/render/tile/RenderTileFloatingFlower.java]
      * for dat sexy sinusoidal motion
@@ -22,7 +20,6 @@ public class RenderTileSoundMuffler extends TileEntitySpecialRenderer {
     private void renderTileEntityAt(TileEntitySoundMuffler tile, double x, double y, double z, float partialTicks) {
         if (tile != null) {
 
-            // BlockRendererDispatcher brd = Minecraft.getMinecraft().getBlockRendererDispatcher();
             GL11.glPushMatrix();
             GL11.glColor4f(1, 1, 1, 1);
             GL11.glTranslated(x + 0.5f, y + 0.5f, z + 0.5f);
@@ -38,15 +35,11 @@ public class RenderTileSoundMuffler extends TileEntitySpecialRenderer {
 
             bindTexture(ModelSoundMuffler.TEXTURE_LOCATION);
             ModelSoundMuffler.render();
-            //TODO actually render the model
-//            IBlockState state = tile.getWorld().getBlockState(tile.getPos());
-//            state = state.getBlock().getExtendedState(state, tile.getWorld(), tile.getPos());
-//            IBakedModel model = brd.getBlockModelShapes().getModelManager().getModel(MODEL_LOCATION);
-//            brd.getBlockModelRenderer().renderModelBrightness(model, state, 1.0F, true);
 
             GL11.glPopMatrix();
         }
     }
+
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
         if (tile instanceof TileEntitySoundMuffler) {

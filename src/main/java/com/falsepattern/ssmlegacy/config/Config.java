@@ -20,7 +20,7 @@ public class Config {
         } catch (Exception e) {
             SuperSoundMuffler.log.error("Problem loading config file", e);
         } finally {
-            if(config.hasChanged()) {
+            if (config.hasChanged()) {
                 config.save();
             }
         }

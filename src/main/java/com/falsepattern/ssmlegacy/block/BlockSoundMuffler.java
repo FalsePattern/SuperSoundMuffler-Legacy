@@ -71,9 +71,9 @@ public class BlockSoundMuffler extends BlockContainer {
         val list = new ArrayList<ItemStack>();
         val stack = new ItemStack(this, 1);
         val te = world.getTileEntity(x, y, z);
-        if(te instanceof TileEntitySoundMuffler) {
+        if (te instanceof TileEntitySoundMuffler) {
             val tileEntity = (TileEntitySoundMuffler) te;
-            if(!tileEntity.isDefault()) {
+            if (!tileEntity.isDefault()) {
                 val compound = new NBTTagCompound();
                 tileEntity.writeNBT(compound);
                 stack.setTagCompound(compound);

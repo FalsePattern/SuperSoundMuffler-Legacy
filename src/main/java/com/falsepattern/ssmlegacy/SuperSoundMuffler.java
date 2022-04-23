@@ -2,19 +2,11 @@ package com.falsepattern.ssmlegacy;
 
 
 import baubles.api.BaublesApi;
-import com.google.common.collect.EvictingQueue;
 import com.falsepattern.ssmlegacy.bauble.ItemSoundMufflerBauble;
 import com.falsepattern.ssmlegacy.block.BlockSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import com.falsepattern.ssmlegacy.proxy.CommonProxy;
-import lombok.Getter;
-import lombok.val;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.sound.SoundEvent;
+import com.google.common.collect.EvictingQueue;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -26,6 +18,13 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import lombok.Getter;
+import lombok.val;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,7 +43,8 @@ public class SuperSoundMuffler {
     @Getter
     private static boolean baublesPresent = false;
 
-    @SidedProxy(clientSide = Tags.GROUPNAME + ".proxy.ClientProxy", serverSide = Tags.GROUPNAME + ".proxy.CommonProxy")
+    @SidedProxy(clientSide = Tags.GROUPNAME + ".proxy.ClientProxy",
+                serverSide = Tags.GROUPNAME + ".proxy.CommonProxy")
     public static CommonProxy proxy;
 
     public static BlockSoundMuffler blockSoundMuffler;
@@ -128,6 +128,7 @@ public class SuperSoundMuffler {
     }
 
     public static int ticksInGame = 0;
+
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onClientTick(TickEvent.ClientTickEvent event) {
@@ -141,6 +142,6 @@ public class SuperSoundMuffler {
 
     @SubscribeEvent
     public void onPlayerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event) {
-         proxy.clearCache();
+        proxy.clearCache();
     }
 }

@@ -3,6 +3,7 @@ package com.falsepattern.ssmlegacy.compat.waila;
 import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.block.BlockSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
@@ -15,7 +16,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.event.FMLInterModComms;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +38,7 @@ public class SoundMufflerWailaDataProvider implements IWailaDataProvider {
         currenttip.add(I18n.format(key));
         currenttip.add(I18n.format("item.sound_muffler.tooltip.range", tileEntity.getRange()));
         List<ResourceLocation> sounds = tileEntity.getMuffledSounds();
-        if(sounds.isEmpty()) {
+        if (sounds.isEmpty()) {
             currenttip.add(I18n.format("item.sound_muffler.tooltip.sounds.count", 0));
         } else {
             currenttip.add(I18n.format("item.sound_muffler.tooltip.sounds.count", sounds.size()));

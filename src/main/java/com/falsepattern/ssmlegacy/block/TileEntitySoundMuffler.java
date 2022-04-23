@@ -22,7 +22,7 @@ import java.util.Set;
 public class TileEntitySoundMuffler extends TileEntity {
     private final Set<ResourceLocation> muffledSounds = new HashSet<>();
     private boolean whiteListMode = true;
-    private static final int[] ranges = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 32, 64, 128, 256 };
+    private static final int[] ranges = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 32, 64, 128, 256};
     private static final int defaultRangeIndex = 7;
     private int rangeIndex = defaultRangeIndex;
 
@@ -68,7 +68,7 @@ public class TileEntitySoundMuffler extends TileEntity {
         whiteListMode = true;
 
         NBTTagList tagList = compound.getTagList("sounds", 10);
-        for(int i = 0; i < tagList.tagCount(); ++i) {
+        for (int i = 0; i < tagList.tagCount(); ++i) {
             NBTTagCompound sound = tagList.getCompoundTagAt(i);
             muffledSounds.add(new ResourceLocation(sound.getString("sound")));
         }
@@ -134,10 +134,10 @@ public class TileEntitySoundMuffler extends TileEntity {
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
-    public boolean isWhiteList() { return whiteListMode; }
+    public boolean isWhiteList() {return whiteListMode;}
 
     public boolean shouldMuffleSound(ResourceLocation soundLocation) {
-        if(isWhiteList()) {
+        if (isWhiteList()) {
             return !muffledSounds.contains(soundLocation);
         }
 
@@ -169,7 +169,7 @@ public class TileEntitySoundMuffler extends TileEntity {
         return rangeIndex;
     }
 
-    public static int getDefaultRange() { return ranges[defaultRangeIndex]; }
+    public static int getDefaultRange() {return ranges[defaultRangeIndex];}
 
-    public static int getDefaultRangeIndex() { return defaultRangeIndex; }
+    public static int getDefaultRangeIndex() {return defaultRangeIndex;}
 }

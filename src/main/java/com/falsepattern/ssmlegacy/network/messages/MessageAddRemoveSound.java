@@ -2,16 +2,15 @@ package com.falsepattern.ssmlegacy.network.messages;
 
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
-import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
-import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.val;
+import net.minecraft.util.ResourceLocation;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -65,8 +64,8 @@ public class MessageAddRemoveSound implements IMessage {
             val player = ctx.getServerHandler().playerEntity;
             if (player != null) {
                 val stack = player.getHeldItem();
-                if(stack != null && stack.getItem() == SuperSoundMuffler.itemSoundMufflerBauble) {
-                    if(message.action == Action.Add) {
+                if (stack != null && stack.getItem() == SuperSoundMuffler.itemSoundMufflerBauble) {
+                    if (message.action == Action.Add) {
                         SuperSoundMuffler.itemSoundMufflerBauble.muffleSound(stack, message.sound);
                     } else {
                         SuperSoundMuffler.itemSoundMufflerBauble.unmuffleSound(stack, message.sound);
@@ -80,7 +79,7 @@ public class MessageAddRemoveSound implements IMessage {
             val te = world.getTileEntity(message.x, message.y, message.z);
             if (te instanceof TileEntitySoundMuffler) {
                 val tileEntity = (TileEntitySoundMuffler) te;
-                if(message.action == Action.Add) {
+                if (message.action == Action.Add) {
                     tileEntity.muffleSound(message.sound);
                 } else {
                     tileEntity.unmuffleSound(message.sound);

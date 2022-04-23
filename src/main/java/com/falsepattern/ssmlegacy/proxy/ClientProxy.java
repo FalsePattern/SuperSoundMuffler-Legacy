@@ -1,9 +1,9 @@
 package com.falsepattern.ssmlegacy.proxy;
 
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
+import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import com.falsepattern.ssmlegacy.render.ItemBlockSoundMufflerRenderer;
 import com.falsepattern.ssmlegacy.render.RenderTileSoundMuffler;
-import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 public class ClientProxy extends CommonProxy {
-    private Set<TileEntitySoundMuffler> soundMufflers = Collections.newSetFromMap(new WeakHashMap<>());
+    private final Set<TileEntitySoundMuffler> soundMufflers = Collections.newSetFromMap(new WeakHashMap<>());
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {

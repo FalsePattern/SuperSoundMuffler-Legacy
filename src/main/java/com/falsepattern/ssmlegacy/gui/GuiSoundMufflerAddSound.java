@@ -5,10 +5,10 @@ import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.gui.data.IMufflerAccessor;
 import com.falsepattern.ssmlegacy.mixin.interfaces.IGuiScrollingListMixin;
 import com.falsepattern.ssmlegacy.mixin.interfaces.ISoundHandlerMixin;
+import cpw.mods.fml.client.GuiScrollingList;
+import cpw.mods.fml.client.config.GuiButtonExt;
 import lombok.val;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.audio.SoundRegistry;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -19,14 +19,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.client.GuiScrollingList;
-import cpw.mods.fml.client.config.GuiButtonExt;
-import cpw.mods.fml.relauncher.CoreModManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import javax.annotation.Nonnull;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -82,7 +77,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
         try {
             val registry = ((ISoundHandlerMixin) Minecraft.getMinecraft().getSoundHandler()).getSoundRegistry();
 
-            if(registry != null) {
+            if (registry != null) {
                 sounds = registry.getKeys();
             }
         } catch (Throwable t) {
@@ -126,8 +121,8 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if(button.enabled) {
-            if(button.id == recentSoundsButton.id) {
+        if (button.enabled) {
+            if (button.id == recentSoundsButton.id) {
                 recentSoundsButton.enabled = false;
                 allSoundsButton.enabled = true;
                 showAllSounds = false;
@@ -135,7 +130,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
                 return;
             }
 
-            if(button.id == allSoundsButton.id) {
+            if (button.id == allSoundsButton.id) {
                 allSoundsButton.enabled = false;
                 recentSoundsButton.enabled = true;
                 showAllSounds = true;
@@ -143,10 +138,10 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
                 return;
             }
 
-            if(button.id == addSoundButton.id) {
+            if (button.id == addSoundButton.id) {
                 List<ResourceLocation> selectedSounds = soundList.getSelectedSounds();
-                for(ResourceLocation sound : selectedSounds) {
-                    if(sound != null) {
+                for (ResourceLocation sound : selectedSounds) {
+                    if (sound != null) {
                         muffler.muffleSound(sound);
                     }
                 }
@@ -155,7 +150,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
                 return;
             }
 
-            if(button.id == cancelButton.id) {
+            if (button.id == cancelButton.id) {
                 mc.displayGuiScreen(prevScreen);
                 return;
             }
@@ -177,7 +172,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
     }
 
     private void updateSoundsList(List<ResourceLocation> sounds) {
-        if(lastFilterText.isEmpty()) {
+        if (lastFilterText.isEmpty()) {
             soundList.setSounds(sounds);
         } else {
             soundList.setSounds(sounds.stream().filter(sound -> sound.toString().toLowerCase().contains(lastFilterText.toLowerCase())).collect(Collectors.toList()));
@@ -204,12 +199,12 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
 
     @Override
     protected void keyTyped(char c, int keyCode) {
-        if(keyCode != KEYCODE_ENTER && keyCode != KEYCODE_KP_ENTER) {
-            if(!searchField.textboxKeyTyped(c, keyCode)) {
+        if (keyCode != KEYCODE_ENTER && keyCode != KEYCODE_KP_ENTER) {
+            if (!searchField.textboxKeyTyped(c, keyCode)) {
                 super.keyTyped(c, keyCode);
             }
         } else {
-            if(searchField.isFocused()) {
+            if (searchField.isFocused()) {
                 searchField.setFocused(false);
             }
         }
@@ -235,7 +230,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
     }
 
     private void drawSearchField() {
-        if(searchField.getText().isEmpty() && !searchField.isFocused()) {
+        if (searchField.getText().isEmpty() && !searchField.isFocused()) {
             fontRendererObj.drawString(I18n.format("tile.sound_muffler.add_sound.gui.search"), guiLeft + 11, guiTop + 139, TEXT_COLOR_DISABLED);
         } else {
             searchField.setTextColor(searchField.isFocused() ? TEXT_COLOR_FOCUSED : TEXT_COLOR_ACTIVE);
@@ -246,7 +241,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
     private final class GuiSoundList extends GuiScrollingList {
         private List<ResourceLocation> sounds;
         private final int slotHeight;
-        private List<Integer> selectedIndicies = new ArrayList<>();
+        private final List<Integer> selectedIndicies = new ArrayList<>();
 
         GuiSoundList(int width, int height, int top, int bottom, int left, int slotHeight) {
             super(Minecraft.getMinecraft(), width, height, top, bottom, left, slotHeight);
@@ -260,15 +255,15 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
 
         @Override
         protected void elementClicked(int index, boolean doubleClick) {
-            if(isCtrlKeyDown()) {
-                if(isSelected(index)) {
+            if (isCtrlKeyDown()) {
+                if (isSelected(index)) {
                     removeSelection(index);
                 } else {
                     selectIndex(index);
                 }
-            } else if(isShiftKeyDown()) {
+            } else if (isShiftKeyDown()) {
                 clearSelection();
-                val selectedIndex = ((IGuiScrollingListMixin)(Object)this).getSelectedIndex();
+                val selectedIndex = ((IGuiScrollingListMixin) (Object) this).getSelectedIndex();
                 int start = index > selectedIndex ? selectedIndex : index;
                 int end = index > selectedIndex ? index : selectedIndex;
                 selectRange(start, end);
@@ -280,8 +275,8 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
 
         @Override
         protected boolean isSelected(int index) {
-            for(int i : selectedIndicies) {
-                if(i == index) {
+            for (int i : selectedIndicies) {
+                if (i == index) {
                     return true;
                 }
             }
@@ -289,8 +284,8 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
         }
 
         void removeSelection(int index) {
-            for(int i = 0; i < selectedIndicies.size(); i++) {
-                if(selectedIndicies.get(i) == index) {
+            for (int i = 0; i < selectedIndicies.size(); i++) {
+                if (selectedIndicies.get(i) == index) {
                     selectedIndicies.remove(i);
                     return;
                 }
@@ -300,7 +295,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
         void selectIndex(int index) {
             removeSelection(index);
             selectedIndicies.add(index);
-            ((IGuiScrollingListMixin)(Object)this).setSelectedIndex(index);
+            ((IGuiScrollingListMixin) (Object) this).setSelectedIndex(index);
         }
 
         void clearSelection() {
@@ -308,14 +303,14 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
         }
 
         void selectRange(int start, int end) {
-            for(int i = start; i <= end; i++) {
+            for (int i = start; i <= end; i++) {
                 selectedIndicies.add(i);
             }
-            ((IGuiScrollingListMixin)(Object)this).setSelectedIndex(end);
+            ((IGuiScrollingListMixin) (Object) this).setSelectedIndex(end);
         }
 
         @Override
-        protected void drawBackground() { }
+        protected void drawBackground() {}
 
         @Override
         protected int getContentHeight() {
@@ -325,21 +320,21 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
         @Override
         protected void drawSlot(int idx, int right, int top, int height, Tessellator tess) {
             ResourceLocation sound = sounds.get(idx);
-            fontRendererObj.drawString(fontRendererObj.trimStringToWidth(sound.toString(), listWidth - 10), left + 3 , top +  2, 0xCCCCCC);
+            fontRendererObj.drawString(fontRendererObj.trimStringToWidth(sound.toString(), listWidth - 10), left + 3, top + 2, 0xCCCCCC);
         }
 
         void setSounds(List<ResourceLocation> sounds) {
             this.sounds = sounds;
-            ((IGuiScrollingListMixin)(Object)this).setSelectedIndex(-1);
+            ((IGuiScrollingListMixin) (Object) this).setSelectedIndex(-1);
             selectedIndicies.clear();
         }
 
-        boolean hasSelectedElements() { return selectedIndicies.size() > 0; }
+        boolean hasSelectedElements() {return selectedIndicies.size() > 0;}
 
         List<ResourceLocation> getSelectedSounds() {
             List<ResourceLocation> ret = new ArrayList<>();
 
-            for(int i : selectedIndicies) {
+            for (int i : selectedIndicies) {
                 ret.add(sounds.get(i));
             }
 

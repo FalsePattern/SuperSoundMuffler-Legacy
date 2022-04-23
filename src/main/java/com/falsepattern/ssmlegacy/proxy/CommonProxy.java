@@ -11,12 +11,11 @@ import com.falsepattern.ssmlegacy.config.Config;
 import com.falsepattern.ssmlegacy.gui.GuiHandler;
 import com.falsepattern.ssmlegacy.network.ThePacketeer;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
-import net.minecraft.item.ItemBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Collections;
 import java.util.Set;
@@ -34,6 +33,7 @@ public class CommonProxy {
         SuperSoundMuffler.itemSoundMufflerBauble = new ItemSoundMufflerBauble();
         GameRegistry.registerItem(SuperSoundMuffler.itemSoundMufflerBauble, ItemSoundMufflerBauble.NAME);
     }
+
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(SuperSoundMuffler.instance, new GuiHandler());
         if (Loader.isModLoaded("Waila")) {
@@ -45,8 +45,11 @@ public class CommonProxy {
 
     }
 
-    public void cacheMuffler(TileEntitySoundMuffler tileEntity) { }
-    public void uncacheMuffler(TileEntitySoundMuffler tileEntity) { }
-    public void clearCache() { }
-    public Set<TileEntitySoundMuffler> getTileEntities() { return Collections.EMPTY_SET; }
+    public void cacheMuffler(TileEntitySoundMuffler tileEntity) {}
+
+    public void uncacheMuffler(TileEntitySoundMuffler tileEntity) {}
+
+    public void clearCache() {}
+
+    public Set<TileEntitySoundMuffler> getTileEntities() {return Collections.EMPTY_SET;}
 }

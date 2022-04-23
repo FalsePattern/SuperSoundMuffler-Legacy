@@ -17,7 +17,7 @@ public class ItemBlockSoundMuffler extends ItemBlock {
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean flag) {
-        if(stack.hasTagCompound()) {
+        if (stack.hasTagCompound()) {
             val compound = stack.getTagCompound();
 
             val showWhiteListTooltip = !compound.hasKey("whiteList") || compound.getBoolean("whiteList");
@@ -27,12 +27,12 @@ public class ItemBlockSoundMuffler extends ItemBlock {
             int rangeIndex = compound.hasKey("rangeIndex") ? compound.getInteger("rangeIndex") : TileEntitySoundMuffler.getDefaultRangeIndex();
             tooltip.add(I18n.format("item.sound_muffler.tooltip.range", TileEntitySoundMuffler.getRange(rangeIndex)));
 
-            if(compound.hasKey("sounds")) {
+            if (compound.hasKey("sounds")) {
                 val tagList = compound.getTagList("sounds", 10);
                 val count = tagList.tagCount();
                 tooltip.add(I18n.format("item.sound_muffler.tooltip.sounds.count", count));
-                if(GuiScreen.isShiftKeyDown()) {
-                    for(int i = 0; i < tagList.tagCount(); ++i) {
+                if (GuiScreen.isShiftKeyDown()) {
+                    for (int i = 0; i < tagList.tagCount(); ++i) {
                         val sound = tagList.getCompoundTagAt(i);
                         tooltip.add(I18n.format("item.sound_muffler.tooltip.sound", sound.getString("sound")));
                     }

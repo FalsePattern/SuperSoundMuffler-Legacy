@@ -7,7 +7,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(GuiScrollingList.class)
 public abstract class GuiScrollingListMixin implements IGuiScrollingListMixin {
-    @Shadow private int selectedIndex;
+    @Shadow
+    private int selectedIndex;
 
     @Override
     public int getSelectedIndex() {

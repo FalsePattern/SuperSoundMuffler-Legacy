@@ -15,6 +15,7 @@ public class ModelSoundMuffler extends ModelBase {
     private static final ModelSoundMuffler instance = new ModelSoundMuffler();
     private static final TileEntitySoundMuffler te = new TileEntitySoundMuffler();
     public ModelRenderer renderer;
+
     private ModelSoundMuffler() {
         renderer = new ModelRenderer(this, 0, 0).setTextureSize(32, 16);
         //Box

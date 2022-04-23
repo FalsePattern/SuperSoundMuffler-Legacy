@@ -16,11 +16,11 @@ public interface IMufflerAccessor {
 
     void unmuffleSound(ResourceLocation sound);
 
-    default boolean isRanged() { return false; }
+    default boolean isRanged() {return false;}
 
-    default int getRange() { return 0; }
+    default int getRange() {return 0;}
 
-    default int getRangeIndex() { return 0; }
+    default int getRangeIndex() {return 0;}
 
-    default void setRange(int value) { }
+    default void setRange(int value) {}
 }

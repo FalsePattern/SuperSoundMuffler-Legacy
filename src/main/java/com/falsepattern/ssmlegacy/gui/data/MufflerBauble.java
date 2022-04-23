@@ -23,9 +23,9 @@ public class MufflerBauble implements IMufflerAccessor {
     @Override
     public boolean isWhiteList() {
         ItemStack bauble = player.getHeldItem();
-        if(bauble.hasTagCompound()) {
+        if (bauble.hasTagCompound()) {
             NBTTagCompound compound = bauble.getTagCompound();
-            if(compound.hasKey("whiteList")) {
+            if (compound.hasKey("whiteList")) {
                 return compound.getBoolean("whiteList");
             }
         }
@@ -38,11 +38,11 @@ public class MufflerBauble implements IMufflerAccessor {
         List<ResourceLocation> sounds = new ArrayList<>();
 
         ItemStack bauble = player.getHeldItem();
-        if(bauble.hasTagCompound()) {
+        if (bauble.hasTagCompound()) {
             NBTTagCompound compound = bauble.getTagCompound();
-            if(compound.hasKey("sounds")) {
+            if (compound.hasKey("sounds")) {
                 NBTTagList list = compound.getTagList("sounds", 10);
-                for(int i = 0; i < list.tagCount(); ++i) {
+                for (int i = 0; i < list.tagCount(); ++i) {
                     NBTTagCompound c = list.getCompoundTagAt(i);
                     String s = c.getString("sound");
                     sounds.add(new ResourceLocation(s));
