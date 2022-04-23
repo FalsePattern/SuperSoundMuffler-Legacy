@@ -55,7 +55,7 @@ public class SuperSoundMuffler {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        baublesPresent = Loader.isModLoaded("baubles");
+        baublesPresent = Loader.isModLoaded("Baubles");
         proxy.preInit(event);
     }
 

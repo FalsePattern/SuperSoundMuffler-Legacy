@@ -7,8 +7,7 @@ dependencies {
     compileOnly("com.github.GTNewHorizons:waila:1.5.20:dev") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:Baubles:1.0.1.14:dev") {
-        transitive = false
+    compile("com.github.GTNewHorizons:Baubles:1.0.1.14:dev") {
     }
     compile("com.falsepattern:falsepatternlib-mc1.7.10:0.5.0:dev")
 }

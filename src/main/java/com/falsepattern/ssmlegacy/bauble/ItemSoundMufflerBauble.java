@@ -3,8 +3,10 @@ package com.falsepattern.ssmlegacy.bauble;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
+import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.gui.GuiHandler;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.Optional;
@@ -21,12 +24,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-@Optional.Interface(modid = "baubles", iface = "baubles.api.IBauble")
+@Optional.Interface(modid = "Baubles", iface = "baubles.api.IBauble")
 public class ItemSoundMufflerBauble extends Item implements IBauble {
+    private IIcon disabledIcon;
     public static final String NAME = "sound_muffler_bauble";
 
     public ItemSoundMufflerBauble() {
         setUnlocalizedName(NAME);
+        setTextureName(Tags.MODID + ":" + NAME);
         setNoRepair();
         setMaxDamage(0);
         setMaxStackSize(1);
@@ -45,32 +50,38 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
 //        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName().toString(), "inventory"));
 //    }
 
-    @Optional.Method(modid = "baubles")
+    @Override
+    @Optional.Method(modid = "Baubles")
     public BaubleType getBaubleType (ItemStack itemstack) {
         return BaubleType.RING;
     }
 
     @Override
+    @Optional.Method(modid = "Baubles")
     public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
 
     }
 
     @Override
+    @Optional.Method(modid = "Baubles")
     public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
 
     }
 
     @Override
+    @Optional.Method(modid = "Baubles")
     public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
 
     }
 
     @Override
+    @Optional.Method(modid = "Baubles")
     public boolean canEquip(ItemStack itemstack, EntityLivingBase player) {
         return true;
     }
 
     @Override
+    @Optional.Method(modid = "Baubles")
     public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
         return true;
     }
@@ -88,6 +99,17 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
             playerIn.openGui(SuperSoundMuffler.instance, GuiHandler.SOUND_MUFFLER_BAUBLE_GUI_ID, worldIn, (int) playerIn.posX, (int) playerIn.posY, (int) playerIn.posZ);
         }
         return stack;
+    }
+
+    @Override
+    public IIcon getIconFromDamage(int damage) {
+        return damage == 0 ? itemIcon : disabledIcon;
+    }
+
+    @Override
+    public void registerIcons(IIconRegister register) {
+        super.registerIcons(register);
+        disabledIcon = register.registerIcon(iconString + "_disabled");
     }
 
     @Override
@@ -219,16 +241,19 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
                 compound.removeTag("disabled");
                 stack.setTagCompound(compound);
                 playerIn.playSound("random.orb", 0.1F, 1F);
+                stack.setItemDamage(0);
             } else {
                 compound.setBoolean("disabled", true);
                 stack.setTagCompound(compound);
                 playerIn.playSound("random.orb", 0.1F, 0.8F);
+                stack.setItemDamage(1);
             }
         } else {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setBoolean("disabled", true);
             stack.setTagCompound(compound);
             playerIn.playSound("random.orb", 0.1F, 0.8F);
+            stack.setItemDamage(1);
         }
     }
 }
