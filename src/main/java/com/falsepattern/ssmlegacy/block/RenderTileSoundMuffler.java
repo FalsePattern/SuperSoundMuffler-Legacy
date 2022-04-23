@@ -1,53 +1,58 @@
 package com.falsepattern.ssmlegacy.block;
 
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
+import org.lwjgl.opengl.GL11;
 
+import java.util.Objects;
 import java.util.Random;
 
-public class RenderTileSoundMuffler extends TileEntitySpecialRenderer<TileEntitySoundMuffler> {
-    private static final ModelResourceLocation MODEL_LOCATION = new ModelResourceLocation(SuperSoundMuffler.MOD_ID + ":" + BlockSoundMuffler.NAME, "inventory");
+public class RenderTileSoundMuffler extends TileEntitySpecialRenderer {
+    //private static final ModelResourceLocation MODEL_LOCATION = new ModelResourceLocation(SuperSoundMuffler.MOD_ID + ":" + BlockSoundMuffler.NAME, "inventory");
 
     /**
      * Code commandeered from Botania[https://github.com/Vazkii/Botania/blob/master/src/main/java/vazkii/botania/client/render/tile/RenderTileFloatingFlower.java]
      * for dat sexy sinusoidal motion
      */
-    @Override
-    public void render(TileEntitySoundMuffler tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    private void renderTileEntityAt(TileEntitySoundMuffler tile, double x, double y, double z, float partialTicks) {
         if (tile != null) {
-            if (!tile.getWorld().isBlockLoaded(tile.getPos(), false)) {
+            if (!tile.getWorldObj().blockExists(tile.xCoord, tile.yCoord, tile.zCoord)) {
                 return;
             }
 
-            BlockRendererDispatcher brd = Minecraft.getMinecraft().getBlockRendererDispatcher();
-            GlStateManager.pushMatrix();
-            GlStateManager.color(1F, 1F, 1F, 1F);
-            GlStateManager.translate(x, y, z);
+            // BlockRendererDispatcher brd = Minecraft.getMinecraft().getBlockRendererDispatcher();
+            GL11.glPushMatrix();
+            GL11.glColor4f(1, 1, 1, 1);
+            GL11.glTranslated(x, y, z);
 
             double worldTime = SuperSoundMuffler.ticksInGame + partialTicks;
-            worldTime += new Random(tile.getPos().hashCode()).nextInt(1000);
+            worldTime += new Random(Objects.hash(tile.xCoord, tile.yCoord, tile.zCoord)).nextInt(1000);
 
-            GlStateManager.translate(0.5F, 0, 0.5F);
-            GlStateManager.rotate(-((float) worldTime * 0.5F), 0F, 1F, 0F);
-            GlStateManager.translate(-0.5F, (float) Math.sin(worldTime * 0.05F) * 0.1F, 0.5);
+            GL11.glTranslatef(0.5f, 0, 0.5f);
+            GL11.glRotatef(-((float) worldTime * 0.5f), 0f, 1f, 0f);
+            GL11.glTranslatef(-0.5f, (float) Math.sin(worldTime * 0.05f) * 0.5f, 0.5f);
 
-            GlStateManager.rotate(4F * (float) Math.sin(worldTime * 0.04F), 1F, 0F, 0F);
+            GL11.glRotatef(4f * (float) Math.sin(worldTime * 0.04f), 1f, 0, 0);
 
-            Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 
-            IBlockState state = tile.getWorld().getBlockState(tile.getPos());
-            state = state.getBlock().getExtendedState(state, tile.getWorld(), tile.getPos());
-            IBakedModel model = brd.getBlockModelShapes().getModelManager().getModel(MODEL_LOCATION);
-            brd.getBlockModelRenderer().renderModelBrightness(model, state, 1.0F, true);
+            //TODO actually render the model
+//            IBlockState state = tile.getWorld().getBlockState(tile.getPos());
+//            state = state.getBlock().getExtendedState(state, tile.getWorld(), tile.getPos());
+//            IBakedModel model = brd.getBlockModelShapes().getModelManager().getModel(MODEL_LOCATION);
+//            brd.getBlockModelRenderer().renderModelBrightness(model, state, 1.0F, true);
 
-            GlStateManager.popMatrix();
+            GL11.glPopMatrix();
+        }
+    }
+
+    @Override
+    public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks) {
+        if (tile instanceof TileEntitySoundMuffler) {
+            renderTileEntityAt((TileEntitySoundMuffler) tile, x, y, z, partialTicks);
         }
     }
 }
