@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.7.11",
+  "package": "com.falsepattern.ssmlegacy.mixin.mixins",
+  "plugin": "com.falsepattern.ssmlegacy.mixin.plugin.MixinPlugin",
+  "refmap": "mixins.ssmlegacy.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8"
+}
+
