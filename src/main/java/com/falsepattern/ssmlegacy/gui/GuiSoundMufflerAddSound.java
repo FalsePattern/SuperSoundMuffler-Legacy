@@ -2,6 +2,7 @@ package com.falsepattern.ssmlegacy.gui;
 
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.gui.data.IMufflerAccessor;
+import lombok.val;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.audio.SoundRegistry;
@@ -15,7 +16,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import cpw.mods.fml.client.GuiScrollingList;
 import cpw.mods.fml.client.config.GuiButtonExt;
 import cpw.mods.fml.relauncher.CoreModManager;
@@ -23,7 +23,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -119,7 +118,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
         soundList.setSounds(allSounds);
 
         Keyboard.enableRepeatEvents(true);
-        searchField = new GuiTextField(2, fontRenderer, guiLeft + 11, guiTop + 139, 232, fontRenderer.FONT_HEIGHT);
+        searchField = new GuiTextField(fontRendererObj, guiLeft + 11, guiTop + 139, 232, fontRendererObj.FONT_HEIGHT);
         searchField.setMaxStringLength(256);
         searchField.setEnableBackgroundDrawing(false);
         searchField.setTextColor(0xE0E0E0);
@@ -133,7 +132,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
+    protected void actionPerformed(GuiButton button) {
         if(button.enabled) {
             if(button.id == recentSoundsButton.id) {
                 recentSoundsButton.enabled = false;
@@ -193,25 +192,25 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int button) throws IOException {
+    protected void mouseClicked(int x, int y, int button) {
         super.mouseClicked(x, y, button);
         searchField.mouseClicked(x, y, button);
-        if (button == 1 && x >= searchField.x && x < searchField.x + searchField.width && y >= searchField.y && y < searchField.y + searchField.height) {
+        if (button == 1 && x >= searchField.xPosition && x < searchField.xPosition + searchField.width && y >= searchField.yPosition && y < searchField.yPosition + searchField.height) {
             searchField.setText("");
         }
     }
 
     @Override
-    public void handleMouseInput() throws IOException {
+    public void handleMouseInput() {
         int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 
         super.handleMouseInput();
-        soundList.handleMouseInput(mouseX, mouseY);
+        //soundList.handleMouseInput(mouseX, mouseY);
     }
 
     @Override
-    protected void keyTyped(char c, int keyCode) throws IOException {
+    protected void keyTyped(char c, int keyCode) {
         if(keyCode != KEYCODE_ENTER && keyCode != KEYCODE_KP_ENTER) {
             if(!searchField.textboxKeyTyped(c, keyCode)) {
                 super.keyTyped(c, keyCode);
@@ -225,7 +224,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString(I18n.format("tile.sound_muffler.add_sound.gui.title"), 8, 9, 0x404040);
+        fontRendererObj.drawString(I18n.format("tile.sound_muffler.add_sound.gui.title"), 8, 9, 0x404040);
     }
 
     @Override
@@ -244,20 +243,20 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
 
     private void drawSearchField() {
         if(searchField.getText().isEmpty() && !searchField.isFocused()) {
-            fontRenderer.drawString(I18n.format("tile.sound_muffler.add_sound.gui.search"), guiLeft + 11, guiTop + 139, TEXT_COLOR_DISABLED);
+            fontRendererObj.drawString(I18n.format("tile.sound_muffler.add_sound.gui.search"), guiLeft + 11, guiTop + 139, TEXT_COLOR_DISABLED);
         } else {
             searchField.setTextColor(searchField.isFocused() ? TEXT_COLOR_FOCUSED : TEXT_COLOR_ACTIVE);
             searchField.drawTextBox();
         }
     }
 
-    private final class GuiSoundList extends GuiScrollingList {
+    private final class GuiSoundList extends GuiScrollingListExt {
         private List<ResourceLocation> sounds;
         private final int slotHeight;
         private List<Integer> selectedIndicies = new ArrayList<>();
 
         GuiSoundList(int width, int height, int top, int bottom, int left, int slotHeight) {
-            super(Minecraft.getMinecraft(), width, height, top, bottom, left, slotHeight, width, height);
+            super(Minecraft.getMinecraft(), width, height, top, bottom, left, slotHeight);
             this.slotHeight = slotHeight;
         }
 
@@ -276,6 +275,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
                 }
             } else if(isShiftKeyDown()) {
                 clearSelection();
+                val selectedIndex = getSelectedIndex();
                 int start = index > selectedIndex ? selectedIndex : index;
                 int end = index > selectedIndex ? index : selectedIndex;
                 selectRange(start, end);
@@ -307,7 +307,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
         void selectIndex(int index) {
             removeSelection(index);
             selectedIndicies.add(index);
-            selectedIndex = index;
+            setSelectedIndex(index);
         }
 
         void clearSelection() {
@@ -318,7 +318,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
             for(int i = start; i <= end; i++) {
                 selectedIndicies.add(i);
             }
-            selectedIndex = end;
+            setSelectedIndex(end);
         }
 
         @Override
@@ -332,12 +332,12 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
         @Override
         protected void drawSlot(int idx, int right, int top, int height, Tessellator tess) {
             ResourceLocation sound = sounds.get(idx);
-            fontRenderer.drawString(fontRenderer.trimStringToWidth(sound.toString(), listWidth - 10), left + 3 , top +  2, 0xCCCCCC);
+            fontRendererObj.drawString(fontRendererObj.trimStringToWidth(sound.toString(), listWidth - 10), left + 3 , top +  2, 0xCCCCCC);
         }
 
         void setSounds(List<ResourceLocation> sounds) {
             this.sounds = sounds;
-            selectedIndex = -1;
+            setSelectedIndex(-1);
             selectedIndicies.clear();
         }
 
