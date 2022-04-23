@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,26 +91,15 @@ public class SuperSoundMuffler {
     @SideOnly(Side.CLIENT)
     private boolean tryMuffleBauble(ISound sound) {
         val player = Minecraft.getMinecraft().thePlayer;
-        if (player != null) {
-            val inventory = player.inventory;
-            for (int slot = 0; slot < inventory.getSizeInventory(); ++slot) {
-                val stack = inventory.getStackInSlot(slot);
-                if (stack != null && stack.getItem() == itemSoundMufflerBauble) {
-                    if (itemSoundMufflerBauble.shouldMuffleSound(stack, sound.getPositionedSoundLocation())) {
-                        return true;
-                    }
-                }
-            }
+        return player != null && (tryMuffleBauble(sound, player.inventory) || (baublesPresent && tryMuffleBauble(sound, BaublesApi.getBaubles(player))));
+    }
 
-            if (baublesPresent) {
-                val baubles = BaublesApi.getBaubles(player);
-                for (int slot = 0; slot < baubles.getSizeInventory(); ++slot) {
-                    val stack = baubles.getStackInSlot(slot);
-                    if (stack != null && stack.getItem() == itemSoundMufflerBauble) {
-                        if (itemSoundMufflerBauble.shouldMuffleSound(stack, sound.getPositionedSoundLocation())) {
-                            return true;
-                        }
-                    }
+    private boolean tryMuffleBauble(ISound sound, IInventory inventory) {
+        for (int slot = 0; slot < inventory.getSizeInventory(); ++slot) {
+            val stack = inventory.getStackInSlot(slot);
+            if (stack != null && stack.getItem() == itemSoundMufflerBauble) {
+                if (itemSoundMufflerBauble.shouldMuffleSound(stack, sound.getPositionedSoundLocation())) {
+                    return true;
                 }
             }
         }
