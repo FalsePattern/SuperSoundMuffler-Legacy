@@ -1,3 +1,3 @@
-# Super Sound Muffler
+# Super Sound Muffler: Legacy
 
-A small Minecraft Mod for muffling specific sounds.
+A backport of EdgarAllen's [Super Sound Muffler](https://github.com/EdgarAllen/SuperSoundMuffler) to 1.7.10, because EU2 sound mufflers suck.
