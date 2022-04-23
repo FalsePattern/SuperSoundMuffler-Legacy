@@ -4,9 +4,9 @@ import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.network.messages.MessageAddRemoveSound;
 import com.falsepattern.ssmlegacy.network.messages.MessageSetRange;
 import com.falsepattern.ssmlegacy.network.messages.MessageToggleWhiteList;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
 
 public class ThePacketeer {
     public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(SuperSoundMuffler.MOD_ID);

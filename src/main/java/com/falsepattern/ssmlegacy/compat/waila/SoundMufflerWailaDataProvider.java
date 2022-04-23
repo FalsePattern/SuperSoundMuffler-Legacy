@@ -14,7 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLInterModComms;
 
 import java.util.List;
 import java.util.stream.Collectors;

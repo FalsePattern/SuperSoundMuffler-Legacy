@@ -3,9 +3,9 @@ package com.falsepattern.ssmlegacy.proxy;
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
 
 import java.util.Collections;
 import java.util.Set;

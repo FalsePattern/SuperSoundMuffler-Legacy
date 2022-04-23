@@ -16,9 +16,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.client.GuiScrollingList;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
-import net.minecraftforge.fml.relauncher.CoreModManager;
+import cpw.mods.fml.client.GuiScrollingList;
+import cpw.mods.fml.client.config.GuiButtonExt;
+import cpw.mods.fml.relauncher.CoreModManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
