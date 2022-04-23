@@ -4,8 +4,7 @@ dependencies {
     }
     annotationProcessor("org.projectlombok:lombok:1.18.22")
 
-    compileOnly("com.github.GTNewHorizons:waila:1.5.20:dev") {
-        transitive = false
+    compile("com.github.GTNewHorizons:waila:1.5.20:dev") {
     }
     compile("com.github.GTNewHorizons:Baubles:1.0.1.14:dev") {
     }
