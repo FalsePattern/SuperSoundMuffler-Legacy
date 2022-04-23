@@ -1,3 +1,6 @@
 repositories {
-
+    maven{
+        name = "JitPack"
+        url = "https://jitpack.falsepattern.com"
+    }
 }
