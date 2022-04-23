@@ -5,30 +5,20 @@ import baubles.api.IBauble;
 import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.gui.GuiHandler;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 @Optional.Interface(modid = "baubles", iface = "baubles.api.IBauble")
@@ -37,28 +27,52 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
 
     public ItemSoundMufflerBauble() {
         setUnlocalizedName(NAME);
-        setRegistryName(NAME);
         setNoRepair();
         setMaxDamage(0);
         setMaxStackSize(1);
-        setCreativeTab(CreativeTabs.TOOLS);
-
-        addPropertyOverride(new ResourceLocation("disabled"), new IItemPropertyGetter() {
-            @SideOnly(Side.CLIENT)
-            public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
-                return isDisabled(stack) ? 1.0f : 0.0F;
-            }
-        });
+        setCreativeTab(CreativeTabs.tabTools);
+//
+//        addPropertyOverride(new ResourceLocation("disabled"), new IItemPropertyGetter() {
+//            @SideOnly(Side.CLIENT)
+//            public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+//                return isDisabled(stack) ? 1.0f : 0.0F;
+//            }
+//        });
     }
 
-    @SideOnly(Side.CLIENT)
-    public void registerModels() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName().toString(), "inventory"));
-    }
+//    @SideOnly(Side.CLIENT)
+//    public void registerModels() {
+//        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName().toString(), "inventory"));
+//    }
 
     @Optional.Method(modid = "baubles")
     public BaubleType getBaubleType (ItemStack itemstack) {
-        return BaubleType.TRINKET;
+        return BaubleType.RING;
+    }
+
+    @Override
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+
+    }
+
+    @Override
+    public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
+
+    }
+
+    @Override
+    public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
+
+    }
+
+    @Override
+    public boolean canEquip(ItemStack itemstack, EntityLivingBase player) {
+        return true;
+    }
+
+    @Override
+    public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
+        return true;
     }
 
     @Override
@@ -67,20 +81,18 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
     }
 
     @Override
-    @Nonnull
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, @Nonnull EnumHand hand) {
-        ItemStack stack = playerIn.getHeldItem(hand);
-        if(playerIn.isSneaking()) {
+    public ItemStack onItemRightClick(ItemStack stack, World worldIn, EntityPlayer playerIn) {
+        if (playerIn.isSneaking()) {
             toggleDisabled(playerIn, stack);
         } else {
             playerIn.openGui(SuperSoundMuffler.instance, GuiHandler.SOUND_MUFFLER_BAUBLE_GUI_ID, worldIn, (int) playerIn.posX, (int) playerIn.posY, (int) playerIn.posZ);
         }
-        return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+        return stack;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean flagIn) {
         tooltip.add(I18n.format("item.sound_muffler_bauble.tooltip.header"));
 
         if(stack.hasTagCompound()) {
@@ -206,17 +218,17 @@ public class ItemSoundMufflerBauble extends Item implements IBauble {
             if(compound.hasKey("disabled")) {
                 compound.removeTag("disabled");
                 stack.setTagCompound(compound);
-                playerIn.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, 1F);
+                playerIn.playSound("random.orb", 0.1F, 1F);
             } else {
                 compound.setBoolean("disabled", true);
                 stack.setTagCompound(compound);
-                playerIn.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, 0.8F);
+                playerIn.playSound("random.orb", 0.1F, 0.8F);
             }
         } else {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setBoolean("disabled", true);
             stack.setTagCompound(compound);
-            playerIn.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1F, 0.8F);
+            playerIn.playSound("random.orb", 0.1F, 0.8F);
         }
     }
 }

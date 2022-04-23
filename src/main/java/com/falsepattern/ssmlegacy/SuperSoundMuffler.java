@@ -1,11 +1,14 @@
 package com.falsepattern.ssmlegacy;
 
 
+import baubles.api.BaublesApi;
 import com.google.common.collect.EvictingQueue;
 import com.falsepattern.ssmlegacy.bauble.ItemSoundMufflerBauble;
 import com.falsepattern.ssmlegacy.block.BlockSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import com.falsepattern.ssmlegacy.proxy.CommonProxy;
+import lombok.Getter;
+import lombok.val;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.gui.GuiScreen;
@@ -39,7 +42,8 @@ public class SuperSoundMuffler {
     public static SuperSoundMuffler instance;
 
     public static final Logger log = LogManager.getLogger(Tags.MODNAME);
-    private boolean checkBaubleSlots = false;
+    @Getter
+    private static boolean baublesPresent = false;
 
     @SidedProxy(clientSide = Tags.GROUPNAME + ".proxy.ClientProxy", serverSide = Tags.GROUPNAME + ".proxy.CommonProxy")
     public static CommonProxy proxy;
@@ -54,6 +58,7 @@ public class SuperSoundMuffler {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        baublesPresent = Loader.isModLoaded("baubles");
         proxy.preInit(event);
     }
 
@@ -65,7 +70,6 @@ public class SuperSoundMuffler {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
-        checkBaubleSlots = Loader.isModLoaded("baubles");
     }
 
     @SubscribeEvent
@@ -75,10 +79,10 @@ public class SuperSoundMuffler {
         if (world != null) {
             ISound sound = event.sound;
 
-            //TODO
-//            if (tryMuffleBauble(event, sound)) {
-//                return;
-//            }
+            if (tryMuffleBauble(event, sound)) {
+                return;
+            }
+
             if (tryMuffleBlock(event, world, sound)) {
                 return;
             }
@@ -87,40 +91,39 @@ public class SuperSoundMuffler {
         }
     }
 
-// TODO
-//    @SideOnly(Side.CLIENT)
-//    private boolean tryMuffleBauble(SoundEvent event, ISound sound) {
-//        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-//        if (player != null) {
-//            InventoryPlayer inventory = player.inventory;
-//            for (int slot = 0; slot < inventory.getSizeInventory(); ++slot) {
-//                ItemStack stack = inventory.getStackInSlot(slot);
-//                if (stack != null && stack.getItem() == itemSoundMufflerBauble) {
-//                    if (itemSoundMufflerBauble.shouldMuffleSound(stack, sound.getPositionedSoundLocation())) {
-//                        event.setCanceled(true);
-//                        return true;
-//                    }
-//                }
-//            }
-//
-//            if (checkBaubleSlots) {
-//                IBaublesItemHandler baubles = player.getCapability(BaublesCapabilities.CAPABILITY_BAUBLES, player.getHorizontalFacing());
-//                for (int slot = 0; slot < baubles.getSlots(); ++slot) {
-//                    ItemStack stack = baubles.getStackInSlot(slot);
-//                    if (!stack.isEmpty() && stack.getItem() == itemSoundMufflerBauble) {
-//                        if (itemSoundMufflerBauble.shouldMuffleSound(stack, sound.getSoundLocation())) {
-//                            event.setResultSound(null);
-//                            return true;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return false;
-//    }
+    @SideOnly(Side.CLIENT)
+    private boolean tryMuffleBauble(SoundEvent event, ISound sound) {
+        val player = Minecraft.getMinecraft().thePlayer;
+        if (player != null) {
+            val inventory = player.inventory;
+            for (int slot = 0; slot < inventory.getSizeInventory(); ++slot) {
+                val stack = inventory.getStackInSlot(slot);
+                if (stack != null && stack.getItem() == itemSoundMufflerBauble) {
+                    if (itemSoundMufflerBauble.shouldMuffleSound(stack, sound.getPositionedSoundLocation())) {
+                        event.setCanceled(true);
+                        return true;
+                    }
+                }
+            }
+
+            if (baublesPresent) {
+                val baubles = BaublesApi.getBaubles(player);
+                for (int slot = 0; slot < baubles.getSizeInventory(); ++slot) {
+                    val stack = baubles.getStackInSlot(slot);
+                    if (stack != null && stack.getItem() == itemSoundMufflerBauble) {
+                        if (itemSoundMufflerBauble.shouldMuffleSound(stack, sound.getPositionedSoundLocation())) {
+                            event.setCanceled(true);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     @SideOnly(Side.CLIENT)
-    private boolean tryMuffleBlock(SoundEvent.SoundSourceEvent event, WorldClient world, ISound sound) {
+    private boolean tryMuffleBlock(SoundEvent event, WorldClient world, ISound sound) {
         Set<TileEntitySoundMuffler> mufflers = SuperSoundMuffler.proxy.getTileEntities();
         for (TileEntitySoundMuffler tile : mufflers) {
             if (!tile.isInvalid() && world == tile.getWorldObj() && tile.shouldMuffleSound(sound)) {

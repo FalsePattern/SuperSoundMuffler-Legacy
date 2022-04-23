@@ -33,7 +33,9 @@ public class CommonProxy {
         GameRegistry.registerBlock(new BlockSoundMuffler(), BlockSoundMuffler.NAME);
         GameRegistry.registerTileEntity(TileEntitySoundMuffler.class, Tags.MODID + ":" + BlockSoundMuffler.NAME);
 
-        GameRegistry.registerItem(new ItemSoundMufflerBauble(), ItemSoundMufflerBauble.NAME);
+        if (SuperSoundMuffler.isBaublesPresent()) {
+            GameRegistry.registerItem(new ItemSoundMufflerBauble(), ItemSoundMufflerBauble.NAME);
+        }
         GameRegistry.registerItem(new ItemBlock(SuperSoundMuffler.blockSoundMuffler).setUnlocalizedName(SuperSoundMuffler.blockSoundMuffler.getUnlocalizedName()), BlockSoundMuffler.NAME);
     }
     public void init(FMLInitializationEvent event) {
