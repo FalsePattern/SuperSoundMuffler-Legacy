@@ -15,7 +15,7 @@ public abstract class SoundManagerMixin {
             require = 1,
             cancellable = true)
     private void handleCancel(ISound sound, CallbackInfo ci) {
-        if (SuperSoundMuffler.instance.shouldMuffle(sound)) {
+        if (SuperSoundMuffler.instance != null && SuperSoundMuffler.instance.shouldMuffle(sound)) {
             ci.cancel();
         }
     }
