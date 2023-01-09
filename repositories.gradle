@@ -1,10 +1,10 @@
 repositories {
     maven {
-        name = "JitPack"
-        url = "https://jitpack.falsepattern.com"
+        name = "mavenpattern"
+        url = "https://mvn.falsepattern.com/releases"
     }
     maven {
-        name = "MavenPattern"
-        url = "https://maven.falsepattern.com"
+        name = "cursemaven"
+        url = "https://mvn.falsepattern.com/cursemaven"
     }
 }

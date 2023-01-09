@@ -1,6 +1,6 @@
 {
   "required": true,
-  "minVersion": "0.7.11",
+  "minVersion": "0.8.5",
   "package": "com.falsepattern.ssmlegacy.mixin.mixins",
   "plugin": "com.falsepattern.ssmlegacy.mixin.plugin.MixinPlugin",
   "refmap": "mixins.ssmlegacy.refmap.json",

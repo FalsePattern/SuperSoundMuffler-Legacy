@@ -1,12 +1,24 @@
+//file:noinspection DependencyNotationArgument
+static def curse(curseDep) {
+    return "curse.maven:" + curseDep
+}
+
+def deobfCurse(curseDep) {
+    try {
+        return deobfMaven("https://cursemaven.com/", curse(curseDep))
+    } catch (Exception ignored) {
+        println("Failed to get dep " + curseDep + " from cursemaven. Grabbing from mirror.")
+        return deobfMaven("https://mvn.falsepattern.com/cursemaven/", curse(curseDep))
+    }
+}
+
 dependencies {
-    compileOnly("org.projectlombok:lombok:1.18.22") {
+    compileOnly("org.projectlombok:lombok:[1.18.24,)") {
         transitive = false
     }
-    annotationProcessor("org.projectlombok:lombok:1.18.22")
+    annotationProcessor("org.projectlombok:lombok:[1.18.24,)")
 
-    compile("com.github.GTNewHorizons:waila:1.5.20:dev") {
-    }
-    compile("com.github.GTNewHorizons:Baubles:1.0.1.14:dev") {
-    }
-    compile("com.falsepattern:falsepatternlib-mc1.7.10:0.5.0:dev")
+    compile(deobfCurse("waila-73488:2230518"))
+    compile(deobfCurse("baubles-227083:2224857"))
+    compile("com.falsepattern:falsepatternlib-mc1.7.10:[0.10.14,):dev")
 }

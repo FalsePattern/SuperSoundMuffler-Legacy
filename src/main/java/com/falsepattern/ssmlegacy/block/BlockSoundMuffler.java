@@ -106,6 +106,6 @@ public class BlockSoundMuffler extends BlockContainer {
 
     @Override
     public int getRenderType() {
-        return ItemBlockSoundMufflerRenderer.ID;
+        return SuperSoundMuffler.RENDER_ID;
     }
 }

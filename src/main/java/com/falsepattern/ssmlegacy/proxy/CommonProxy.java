@@ -7,7 +7,6 @@ import com.falsepattern.ssmlegacy.block.BlockSoundMuffler;
 import com.falsepattern.ssmlegacy.block.ItemBlockSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import com.falsepattern.ssmlegacy.compat.waila.SoundMufflerWailaDataProvider;
-import com.falsepattern.ssmlegacy.config.Config;
 import com.falsepattern.ssmlegacy.gui.GuiHandler;
 import com.falsepattern.ssmlegacy.network.ThePacketeer;
 import cpw.mods.fml.common.Loader;
@@ -26,7 +25,6 @@ import java.util.Set;
 public class CommonProxy {
 
     public void preInit(FMLPreInitializationEvent event) {
-        Config.readConfig(event.getSuggestedConfigurationFile());
         ThePacketeer.init();
 
         SuperSoundMuffler.blockSoundMuffler = new BlockSoundMuffler();

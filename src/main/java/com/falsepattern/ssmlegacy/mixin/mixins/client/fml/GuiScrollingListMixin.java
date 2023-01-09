@@ -5,7 +5,8 @@ import cpw.mods.fml.client.GuiScrollingList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(GuiScrollingList.class)
+@Mixin(value = GuiScrollingList.class,
+       remap = false)
 public abstract class GuiScrollingListMixin implements IGuiScrollingListMixin {
     @Shadow
     private int selectedIndex;

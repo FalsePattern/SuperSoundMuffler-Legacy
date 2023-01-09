@@ -7,6 +7,8 @@ import com.falsepattern.ssmlegacy.block.BlockSoundMuffler;
 import com.falsepattern.ssmlegacy.block.TileEntitySoundMuffler;
 import com.falsepattern.ssmlegacy.proxy.CommonProxy;
 import com.google.common.collect.EvictingQueue;
+
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -35,8 +37,11 @@ import java.util.Set;
 @Mod(modid = Tags.MODID,
      version = Tags.VERSION,
      name = Tags.MODNAME,
-     dependencies = "after:Waila;after:Baubles")
+     dependencies = "after:Waila;" +
+                    "after:Baubles;" +
+                    "required-after:falsepatternlib@[0.10.14,);")
 public class SuperSoundMuffler {
+    public static final int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
     @Mod.Instance(Tags.MODID)
     public static SuperSoundMuffler instance;
 
