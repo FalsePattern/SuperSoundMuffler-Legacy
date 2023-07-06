@@ -14,7 +14,6 @@ import static com.falsepattern.lib.mixin.IMixin.PredicateHelpers.always;
 @RequiredArgsConstructor
 public enum Mixin implements IMixin {
     //region vanilla->client
-    SoundHandlerMixin(Side.CLIENT, always(), "vanilla.SoundHandlerMixin"),
     SoundManagerMixin(Side.CLIENT, always(), "vanilla.SoundManagerMixin"),
     //endregion
     //region fml->client

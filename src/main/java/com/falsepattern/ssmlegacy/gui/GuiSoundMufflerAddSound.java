@@ -4,7 +4,6 @@ import com.falsepattern.ssmlegacy.SuperSoundMuffler;
 import com.falsepattern.ssmlegacy.Tags;
 import com.falsepattern.ssmlegacy.gui.data.IMufflerAccessor;
 import com.falsepattern.ssmlegacy.mixin.interfaces.IGuiScrollingListMixin;
-import com.falsepattern.ssmlegacy.mixin.interfaces.ISoundHandlerMixin;
 import cpw.mods.fml.client.GuiScrollingList;
 import cpw.mods.fml.client.config.GuiButtonExt;
 import lombok.val;
@@ -75,7 +74,7 @@ public class GuiSoundMufflerAddSound extends GuiContainer {
     private Set<ResourceLocation> getSoundList() {
         Set<ResourceLocation> sounds = Collections.EMPTY_SET;
         try {
-            val registry = ((ISoundHandlerMixin) Minecraft.getMinecraft().getSoundHandler()).getSoundRegistry();
+            val registry = Minecraft.getMinecraft().getSoundHandler().sndRegistry;
 
             if (registry != null) {
                 sounds = registry.getKeys();
