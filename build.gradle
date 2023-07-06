@@ -1,4 +1,4 @@
-//version: 1656003793falsepattern59
+//version: 1656003793falsepattern67
 /*
 DO NOT CHANGE THIS FILE!
 
@@ -282,9 +282,13 @@ if(file("addon.gradle").exists()) {
 apply from: 'repositories.gradle'
 
 configurations {
-    implementation.extendsFrom(shadowImplementation)  // TODO: remove after all uses are refactored
-    implementation.extendsFrom(shadowCompile)
-    implementation.extendsFrom(shadeCompile)
+    for (config in [shadowImplementation, shadowCompile, shadeCompile]) {
+        implementation.extendsFrom(shadeCompile)
+        compileClasspath.extendsFrom(config)
+        runtimeClasspath.extendsFrom(config)
+        testCompileClasspath.extendsFrom(config)
+        testRuntimeClasspath.extendsFrom(config)
+    }
 }
 
 repositories {
@@ -314,6 +318,8 @@ dependencies {
         compile("org.spongepowered:mixin:0.8.5-gasstation_7")
         compile("com.llamalad7:MixinExtras:0.1.1-gasstation")
         compile("com.falsepattern:00gasstation-mc1.7.10:0.5.1:dev")
+        runtimeClasspath('org.jetbrains:intellij-fernflower:1.2.1.16')
+        testRuntimeClasspath('org.jetbrains:intellij-fernflower:1.2.1.16')
     } else if(hasMixinDeps.toBoolean()) {
         runtime("com.llamalad7:MixinExtras:0.1.1-gasstation")
         runtime("org.spongepowered:mixin:0.8.5-gasstation_7")
@@ -664,12 +670,18 @@ def getCredentials = {
 }
 
 //Publishing
-publish.dependsOn(build)
+tasks.publish.dependsOn(build)
+
 publishing {
     publications {
         maven(MavenPublication) {
-            artifact source: usesShadowedDependencies.toBoolean() ? shadowJar : jar, classifier: ""
-            artifact source: sourcesJar, classifier: "sources"
+            from components.java
+            if (usesShadowedDependencies.toBoolean()) {
+                artifact source: shadowJar, classifier: ""
+            }
+            if (!project.hasProperty("noPublishedSources") || !noPublishedSources) {
+                artifact source: sourcesJar, classifier: "sources"
+            }
             artifact source: usesShadowedDependencies.toBoolean() ? shadowDevJar : devJar, classifier: "dev"
             if (apiPackage) {
                 artifact source: apiJar, classifier: "api"
@@ -715,6 +727,12 @@ publishing {
     }
 }
 
+tasks.withType(PublishToMavenRepository) { task ->
+    dependsOn("build")
+}
+
+publishToMavenLocal.dependsOn("build")
+
 if (project.changelog == "") {
     File changelogFile = new File(System.getenv("CHANGELOG_FILE") ?: "CHANGELOG.md")
     if (changelogFile.exists()) {
@@ -737,7 +755,7 @@ if (curseForgeProjectId != "" && System.getenv("CURSEFORGE_TOKEN") != null) {
             addGameVersion project.minecraft.version
             addGameVersion "Forge"
             mainArtifact(jar) {
-                displayName = "$modName version: $modVersion"
+                displayName = "$modName $modVersion"
             }
         }
         options {
@@ -1051,7 +1069,7 @@ def deobf(String sourceURL, String rawFileName) {
     }
 
     download.run {
-        src "http://jenkins.usrv.eu:8081/nexus/content/repositories/releases/com/github/parker8283/BON2/$bon2Version-CUSTOM/BON2-$bon2Version-CUSTOM-all.jar"
+        src "https://github.com/FalsePattern/ExampleMod1.7.10/raw/main/blobs/BON2-2.5.1.jar"
         dest bon2File
         quiet true
         overwrite false
@@ -1065,7 +1083,7 @@ def deobf(String sourceURL, String rawFileName) {
     }
 
     exec {
-        commandLine 'java', '-jar', bon2File, '--inputJar', obfFile, '--outputJar', deobfFile, '--mcVer', minecraftVersion, '--mappingsVer', mappingsVer, '--notch'
+        commandLine Paths.get(System.getProperty("java.home"), "bin", "java").toAbsolutePath().toString(), '-jar', bon2File, '--inputJar', obfFile, '--outputJar', deobfFile, '--mcVer', minecraftVersion, '--mappingsVer', mappingsVer, '--notch'
         workingDir bon2Dir
         standardOutput = new FileOutputStream("${deobfFile}.log")
     }
