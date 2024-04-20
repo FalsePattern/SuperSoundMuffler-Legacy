@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 public class ClientProxy extends CommonProxy {
-    private final Set<TileEntitySoundMuffler> soundMufflers = Collections.newSetFromMap(new WeakHashMap<>());
+    private final Set<TileEntitySoundMuffler> soundMufflers = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {

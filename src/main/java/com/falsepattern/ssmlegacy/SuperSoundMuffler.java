@@ -115,9 +115,11 @@ public class SuperSoundMuffler {
     @SideOnly(Side.CLIENT)
     private boolean tryMuffleBlock(WorldClient world, ISound sound) {
         Set<TileEntitySoundMuffler> mufflers = SuperSoundMuffler.proxy.getTileEntities();
-        for (TileEntitySoundMuffler tile : mufflers) {
-            if (!tile.isInvalid() && world == tile.getWorldObj() && tile.shouldMuffleSound(sound)) {
-                return true;
+        synchronized (mufflers) {
+            for (TileEntitySoundMuffler tile : mufflers) {
+                if (!tile.isInvalid() && world == tile.getWorldObj() && tile.shouldMuffleSound(sound)) {
+                    return true;
+                }
             }
         }
         return false;
