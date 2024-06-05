@@ -13,12 +13,11 @@ def deobfCurse(curseDep) {
 }
 
 dependencies {
-    compileOnly("org.projectlombok:lombok:[1.18.24,)") {
-        transitive = false
-    }
-    annotationProcessor("org.projectlombok:lombok:[1.18.24,)")
+    compileOnly("org.projectlombok:lombok:1.18.32")
+    annotationProcessor("org.projectlombok:lombok:1.18.32")
 
-    compile(deobfCurse("waila-73488:2230518"))
-    compile(deobfCurse("baubles-227083:2224857"))
-    compile("com.falsepattern:falsepatternlib-mc1.7.10:[0.10.14,):dev")
+    implementation(deobfCurse("waila-73488:2230518"))
+    implementation(deobfCurse("baubles-227083:2224857"))
+    compileOnly("com.falsepattern:falsepatternlib-mc1.7.10:1.2.4:api")
+    runtimeOnly("com.falsepattern:falsepatternlib-mc1.7.10:1.2.4:dev")
 }

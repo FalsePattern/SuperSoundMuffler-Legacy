@@ -39,7 +39,7 @@ import java.util.Set;
      name = Tags.MODNAME,
      dependencies = "after:Waila;" +
                     "after:Baubles;" +
-                    "required-after:falsepatternlib@[0.10.14,);")
+                    "required-after:falsepatternlib@[1.2.0,);")
 public class SuperSoundMuffler {
     public static final int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
     @Mod.Instance(Tags.MODID)
